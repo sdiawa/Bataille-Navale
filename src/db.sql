@@ -1,40 +1,11 @@
-
-Skip to content
-Pull requests
-Issues
-Marketplace
-Explore
-@uvsq21805839
-Learn Git and GitHub without any code!
-
-Using the Hello World guide, you’ll start a branch, write comments, and open a pull request.
-21600112 /
-bataillenavaleaws
-
-1
-0
-
-    0
-
-Code
-Issues 0
-Pull requests 0
-Actions
-Projects 0
-Wiki
-Security
-Insights
-bataillenavaleaws/bataillenavalle.sql
-@billalzemmoura billalzemmoura ajout de la version de la premiere semaine dce21ea 7 days ago
-54 lines (44 sloc) 1.28 KB
 -- phpMyAdmin SQL Dump
--- version 4.8.3
+-- version 5.0.1
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1
--- Généré le :  mer. 11 mars 2020 à 16:12
--- Version du serveur :  10.1.36-MariaDB
--- Version de PHP :  7.2.11
+-- Hôte : localhost
+-- Généré le : ven. 20 mars 2020 à 02:04
+-- Version du serveur :  10.4.11-MariaDB
+-- Version de PHP : 7.3.15
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -48,52 +19,47 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données :  `bataillenavalle`
+-- Base de données : `db_bn`
 --
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `joueur`
+-- Structure de la table `joueurs`
 --
 
-CREATE TABLE `joueur` (
-  `id` int(15) NOT NULL,
-  `prenom` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(100) NOT NULL,
-  `win` int(15) NOT NULL,
-  `lose` int(15) NOT NULL,
-  `nom` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+CREATE TABLE `joueurs` (
+  `id` int(11) NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `prenom` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `win` int(11) NOT NULL,
+  `lose` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Index pour les tables déchargées
 --
 
 --
--- Index pour la table `joueur`
+-- Index pour la table `joueurs`
 --
-ALTER TABLE `joueur`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `joueurs`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `joueurs`
+--
+ALTER TABLE `joueurs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-    © 2020 GitHub, Inc.
-    Terms
-    Privacy
-    Security
-    Status
-    Help
-
-    Contact GitHub
-    Pricing
-    API
-    Training
-    Blog
-    About
-
-

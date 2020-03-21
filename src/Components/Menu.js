@@ -18,7 +18,13 @@ export default class  Menu extends Component{
                     <nav className="my-2 my-md-0 mr-md-3">
                         <Link className="p-2 text-dark" to={'/'}>Accueil</Link>
                         <Link className="p-2 text-dark" to={'/profile'}>Profile</Link>
-                        <Link className="p-2 text-dark" to={'/login'}>Login</Link>
+                        <Link className="p-2 text-dark" to={{
+                            pathname: '/login',
+                            state: {
+                                regSucc: false,
+                                logoutSucc:false
+                            }
+                        }}>Login</Link>
                     </nav>
                     <Link className="btn btn-outline-primary" to={'/register'}>Inscription</Link>
                 </div>

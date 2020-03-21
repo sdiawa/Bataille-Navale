@@ -36,20 +36,20 @@ export default class  Login extends Component{
                         {errors[0].badCredential.isActive && <div className="alert alert-danger">
                             {errors[0].badCredential.message}
                         </div>}
-                        {errors[0].email.map(item => {
+                        {errors[0].email.map((item,index) => {
                             if (item.isActive)
-                                return <div className="alert alert-danger">{item.message}</div>;
+                                return <div key={index} className="alert alert-danger">{item.message}</div>;
                             return ''
                         })}
-                        {errors[0].password.map(item => {
+                        {errors[0].password.map((item,index) => {
                             if (item.isActive)
-                                return <div className="alert alert-danger">{item.message}</div>;
+                                return <div key={index} className="alert alert-danger">{item.message}</div>;
                             return ''
                         })}
-                        {this.props.regSucc && <div className="alert alert-success">
-                            You have been registered.
+                        {this.props.location.state.regSucc && <div className="alert alert-success">
+                           Votre compte a bien été enregister.
                         </div>}
-                        {this.props.logoutSucc && <div className="alert alert-info" >
+                        {this.props.location.state.logoutSucc && <div className="alert alert-info" >
                             You have been logged out.
                         </div>}
                         <div className="card-body">
@@ -105,7 +105,8 @@ export default class  Login extends Component{
     submitAction = async (event)=> {
         event.preventDefault();
         const validEmailRegex =
-            RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
+            // eslint-disable-next-line no-useless-escape
+            RegExp(/^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i);
 
         const {email, password} = this.state;
         this.setState(prevState => {
@@ -127,7 +128,7 @@ export default class  Login extends Component{
 
         });
         console.log(this.state);
-        const isLogged = await Axios.get('localhost/api/login?email='+email+'&password='+password);
+        const isLogged = await Axios.get('http://localhost/api/login?email='+email+'&password='+password);
         isLogged
             .then(res=>{if (res.status === 200) console.log("connexion ok")})
             .catch(error=>{console.log(error)})
