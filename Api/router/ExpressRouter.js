@@ -1,4 +1,4 @@
-const {addUser} = require("../db/Config");
+const {addUser,checkUser} = require("../db/Config");
 const express = require('express');
 const app = express.Router();
 app.post('/api/register',async function (req,res) {
@@ -16,5 +16,17 @@ app.get('/', function (req, res) {
 });
 app.get('/api', function (req, res) {
     res.send('Api b-n!')
+});
+app.get('/api/login', async function (req, res) {
+    if (req.query.email && req.query.password){
+        const user = await checkUser(req.query.email,req.query.password);
+        if (user === null)
+            return res.status(400).send();
+        if (user)
+            return res.status(200).send({nom:user.nom,prenom:user.prenom,email:user.email});
+        return res.status(409).send();
+
+    }else
+        return res.status(400).send();
 });
 module.exports = app;

@@ -40,6 +40,6 @@ const checkUser = async (email, password) =>{
     let user = await User.findOne({ where: {email:email} }).catch(()=> {return null});
     if (user===null)
         return false;
-    return await bCrypt.compare(password, user.password);
+    return  bCrypt.compareSync(password, user.password) === true ? user : false;
 };
 module.exports = {User,hashPassword,checkUser,addUser};

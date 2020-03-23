@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import Axios from "axios";
 import {withRouter} from "react-router-dom";
+import {withSessionContext} from "../Utils/SessionProvider";
 
 class Register extends Component {
     constructor(props) {
@@ -130,7 +131,6 @@ class Register extends Component {
                 *  Status = 400 ou 304
                 */
                 this.setState(async (prevState) => {
-                    console.log(prevState.errors);
                     return (
                         {
                             errors: await prevState.errors.map(value => value.internalError[0].isActive = true)
@@ -144,6 +144,10 @@ class Register extends Component {
 
     render() {
         const {nom, prenom, email, password, confirmPassword, errors} = this.state;
+        console.log(this.props.context.isLogged);
+        if (this.props.context.isLogged){
+            return ""
+        }
         return (
             < div className="container">
                 < div className="row">
@@ -217,4 +221,4 @@ class Register extends Component {
         )
     }
 }
-export default withRouter(Register);
+export default withRouter(withSessionContext(Register));
