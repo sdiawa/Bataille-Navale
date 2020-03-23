@@ -1,14 +1,17 @@
 import React,{Component} from "react";
 import Logo from "./logo.jpg";
+import {withSessionContext} from "../Utils/SessionProvider";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {Link} from "react-router-dom";
+import {Link,withRouter} from "react-router-dom";
 import Axios from "axios";
-export default class  Login extends Component{
+class  Login extends Component{
     constructor(props) {
         super(props);
         this.state = {
             email: "",
             password: "",
+            regSucc:this.props.location.state ? this.props.location.state.regSucc:false,
+            logoutSucc:this.props.location.state? this.props.location.state.logoutSucc:false,
             errors: [{
                 'email': [
                     {isActive: false, type: 'emailNotBlank', message: 'L\'email ne doit pas être vide.'},
@@ -20,12 +23,20 @@ export default class  Login extends Component{
                 ],
                 'badCredential': [
                     {isActive: false, type: 'badcredential', message: 'Email ou mot de passe invalide.'}
+                ],
+                internalError: [
+                    {isActive: false, type: 'internError', message: 'Erreur interne du serveur. Contactez l\'administrateur. '},
                 ]
             }]
         };
     }
+    componentDidMount() {
+        if (this.props.context.isLogged)
+            return this.props.history.push('/')
+    }
+
     render() {
-         const {errors,email,password} = this.state;
+         const {errors,email,password,regSucc,logoutSucc} = this.state;
         return(
             <div className="container">
                 <div className="row">
@@ -33,8 +44,11 @@ export default class  Login extends Component{
                         <div className="card-header text-center bg-transparent">
                             <img src={Logo} className="img" alt="logo" width="256" height="128"/>
                         </div>
-                        {errors[0].badCredential.isActive && <div className="alert alert-danger">
-                            {errors[0].badCredential.message}
+                        {errors[0].badCredential[0].isActive && <div className="alert alert-danger">
+                            {errors[0].badCredential[0].message}
+                        </div>}
+                        {errors[0].internalError[0].isActive && <div className="alert alert-danger">
+                            {errors[0].internalError[0].message}
                         </div>}
                         {errors[0].email.map((item,index) => {
                             if (item.isActive)
@@ -46,11 +60,11 @@ export default class  Login extends Component{
                                 return <div key={index} className="alert alert-danger">{item.message}</div>;
                             return ''
                         })}
-                        {this.props.location.state.regSucc && <div className="alert alert-success">
+                        {regSucc && <div className="alert alert-success">
                            Votre compte a bien été enregister.
                         </div>}
-                        {this.props.location.state.logoutSucc && <div className="alert alert-info" >
-                            You have been logged out.
+                        {logoutSucc && <div className="alert alert-info" >
+                            Vous avez bien été déconnecter.
                         </div>}
                         <div className="card-body">
                             <form className="form-group" onSubmit={this.submitAction}>
@@ -97,6 +111,8 @@ export default class  Login extends Component{
         const value = target.value;
         const name = target.name;
         this.setState({
+            regSucc:false,
+            logoutSucc:false,
             [name]: value
 
         });
@@ -104,33 +120,73 @@ export default class  Login extends Component{
 
     submitAction = async (event)=> {
         event.preventDefault();
+        const myHistory = this.props.history;
+        const {context} = this.props;
         const validEmailRegex =
             // eslint-disable-next-line no-useless-escape
             RegExp(/^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i);
 
         const {email, password} = this.state;
-        this.setState(prevState => {
+        let isError = false;
+        await this.setState(prevState => {
             return ({
-                errors: [
-                    {
-                        email: [
-                            {isActive: email.trim()==="", type: 'emailNotBlank', message: prevState.errors[0].email[0].message},
-                            {isActive: !validEmailRegex.test(email), type: 'emailValid', message: prevState.errors[0].email[1].message}
-                        ],
-                        password:[
-                            {isActive: password.trim()==="", type: 'passNotBlank', message: prevState.errors[0].password[0].message},
-                            {isActive: password.length < 8, type: 'passMin', message: prevState.errors[0].password[1].message}
-                        ],
-                        badCredential:prevState.errors[0].badCredential
+                errors: prevState.errors.map(
+                    item => {
+                        item.email[0].isActive = email.trim()==="";
+                        item.email[1].isActive =!validEmailRegex.test(email);
+                        item.email.forEach(value => {
+                            if (value.isActive) isError = true
+                        });
+                        item.badCredential[0].isActive=false;
+                        item.internalError[0].isActive=false;
+                        item.password[0].isActive = password.trim() === "";
+                        item.password[1].isActive = password.length < 8;
+                        item.password.forEach(value => {
+                            if (value.isActive) isError = true
+                        });
+                        return item;
                     }
-                ]
-            });
+                ) });
 
         });
-        console.log(this.state);
-        const isLogged = await Axios.get('http://localhost/api/login?email='+email+'&password='+password);
-        isLogged
-            .then(res=>{if (res.status === 200) console.log("connexion ok")})
-            .catch(error=>{console.log(error)})
+        if (!isError){
+            await Axios.get('http://localhost:8000/api/login?email='+email+'&password='+password,
+                {headers: {'Access-Control-Allow-Origin': '*'}}
+                )
+                .then(res=>{
+                    if (res.status === 200)
+                    {
+                        const data = res.data;
+                        context.updateSession({ nom:data.nom,prenom:data.prenom,email:data.email });
+                        return myHistory.push("/");
+                    }
+                })
+                .catch(res=>{
+                    /*
+                    * Erreur La réquête est passée mais l'email et le mp ne concorde pas
+                    *  Status = 409
+                    */
+                    if (res.response && res.response.status === 409)
+                        return this.setState(async (prevState) => {
+                            return (
+                                {
+                                    errors: await prevState.errors.map(value => value.badCredential[0].isActive = true)
+                                }
+                            );
+                        });
+                    /*
+                    * Erreur interne La réquête n'est pas passée
+                    *  Status = 400 ou 304
+                    */
+                    this.setState(async (prevState) => {
+                        return (
+                            {
+                                errors: await prevState.errors.map(value => value.internalError[0].isActive = true)
+                            }
+                        );
+                    });
+                })
+        }
     };
 }
+export default withRouter(withSessionContext(Login));

@@ -1,10 +1,22 @@
 import React,{Component} from "react";
 import Logo from "./logo.jpg";
-export default class  Profile extends Component{
+import {withSessionContext} from "../Utils/SessionProvider";
+import {withRouter} from "react-router-dom";
+
+class  Profile extends Component{
     constructor(props) {
         super(props);
         this.state = {
-           id:0, nom:'',prenom:'',email:''
+            nom:'',prenom:'',email:''
+        }
+    };
+    componentDidMount(){
+        if (!this.props.context.isLogged){
+            return this.props.history.push('/login',{regSucc:false,logoutSucc:false});
+        }else
+        {
+            const {email,nom,prenom} =this.props.context.session;
+            this.setState({nom, prenom, email});
         }
     };
 
@@ -38,3 +50,4 @@ export default class  Profile extends Component{
     }
 
 }
+export default withRouter(withSessionContext(Profile))
