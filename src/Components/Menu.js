@@ -8,6 +8,7 @@ import Login from "./Login";
 import HeaderImg from "./header.jpg";
 import Logout from "./Logout";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import NewGame from "./NewGame";
 class  Menu extends Component{
     render() {
         const {isLogged} = this.props.context;
@@ -44,6 +45,7 @@ class  Menu extends Component{
                         <Route exact={true} path='/logout' component={Logout}/>
                         <Route exact={true} path='/profile' component={Profile}/>
                         <Route exact={true} path='/register' component={Register}/>
+                        <Route exact={true} path='/new-game' component={NewGame}/>
                     </Switch>
                 </BrowserRouter>
 

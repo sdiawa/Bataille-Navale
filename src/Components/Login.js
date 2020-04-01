@@ -150,7 +150,7 @@ class  Login extends Component{
 
         });
         if (!isError){
-            await Axios.get('http://localhost:8000/api/login?email='+email+'&password='+password,
+            await Axios.get('https://bataille-navale-back.herokuapp.com/api/login?email='+email+'&password='+password,
                 {headers: {'Access-Control-Allow-Origin': '*'}}
                 )
                 .then(res=>{

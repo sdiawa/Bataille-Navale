@@ -103,7 +103,7 @@ class Register extends Component {
             );
         });
         if (!isError) {
-            await Axios.post('http://localhost:8000/api/register', {
+            await Axios.post('https://bataille-navale-back.herokuapp.com/api/register', {
                 nom,
                 prenom,
                 email,

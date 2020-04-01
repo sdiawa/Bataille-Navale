@@ -24,7 +24,7 @@ class Home extends Component{
 
     newGame =(event)=> {
         event.preventDefault();
-        return alert("New Game");
+        return this.props.history.push('/new-game')
     }
 }
 export default withRouter(withSessionContext(Home));
