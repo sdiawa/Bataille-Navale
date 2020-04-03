@@ -24,8 +24,9 @@
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
     <loaded-nodes>
-      <connection connection-id="93d7ab59-40d6-4276-89ca-cec4273db591">
-        <schema name="public" object-types="function, sequence, view, table" />
+      <connection connection-id="0d3d3967-3637-4f9d-967f-5751bfb1dc4c">
+        <schema name="pg_catalog" object-types="function" />
+        <schema name="public" object-types="table, function, constraint, view, sequence, dataset trigger, index, column" />
       </connection>
     </loaded-nodes>
   </component>
@@ -33,7 +34,7 @@
     <connection id="7b2dd060-5e05-4445-87e0-e90419199dd9">
       <console name="Mysql" type="STANDARD" schema="" session="Main" />
     </connection>
-    <connection id="93d7ab59-40d6-4276-89ca-cec4273db591">
+    <connection id="0d3d3967-3637-4f9d-967f-5751bfb1dc4c">
       <console name="Connection" type="STANDARD" schema="information_schema" session="Main" />
     </connection>
   </component>
@@ -42,10 +43,11 @@
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="7b2dd060-5e05-4445-87e0-e90419199dd9" />
-    <connection id="93d7ab59-40d6-4276-89ca-cec4273db591" />
+    <connection id="0d3d3967-3637-4f9d-967f-5751bfb1dc4c" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="7b2dd060-5e05-4445-87e0-e90419199dd9" dataset="db_bn.joueurs" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="0d3d3967-3637-4f9d-967f-5751bfb1dc4c" dataset="public.joueurs" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
@@ -153,7 +155,7 @@
           <object-name-filters />
         </object-filters>
       </connection>
-      <connection id="93d7ab59-40d6-4276-89ca-cec4273db591" active="true">
+      <connection id="0d3d3967-3637-4f9d-967f-5751bfb1dc4c" active="true">
         <database>
           <name value="Connection" />
           <description value="" />
@@ -164,12 +166,12 @@
           <driver-library value="" />
           <driver value="" />
           <url-type value="DATABASE" />
-          <host value="ec2-34-202-7-83.compute-1.amazonaws.com" />
+          <host value="ec2-46-137-84-173.eu-west-1.compute.amazonaws.com" />
           <port value="5432" />
-          <database value="dfh6cgogm94jt7" />
+          <database value="dcpnigpjs7hlgm" />
           <type value="USER_PASSWORD" />
-          <user value="pnlajbvuanvzma" />
-          <deprecated-pwd value="MjUzMjU3MjQwNDI1YjExMjU1NmVkYjljNTU1MzViZmQyODA2MWJlNTkxYThhZTI0YTVkYWE3MmI2NGY1Yzc3MA==" />
+          <user value="kqmtyheeieimld" />
+          <deprecated-pwd value="ZTMyNTIzZjdkMzQyZjEyMzllNzAxYTAzOTY5NjE5NWZiYWFhNjI3ODZhNDdiNTM5MjdkYzFmMjcyY2QwYTgwZg==" />
         </database>
         <properties>
           <auto-commit value="false" />
