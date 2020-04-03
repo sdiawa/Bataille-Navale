@@ -103,7 +103,7 @@ class Register extends Component {
             );
         });
         if (!isError) {
-            await Axios.post('http://localhost:8000/api/register', {
+            await Axios.post('https://uvsq-bataille-navale-back.herokuapp.com/api/register', {
                 nom,
                 prenom,
                 email,
@@ -144,7 +144,6 @@ class Register extends Component {
 
     render() {
         const {nom, prenom, email, password, confirmPassword, errors} = this.state;
-        console.log(this.props.context.isLogged);
         if (this.props.context.isLogged){
             return ""
         }
