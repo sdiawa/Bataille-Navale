@@ -144,7 +144,6 @@ class Register extends Component {
 
     render() {
         const {nom, prenom, email, password, confirmPassword, errors} = this.state;
-        console.log(this.props.context.isLogged);
         if (this.props.context.isLogged){
             return ""
         }

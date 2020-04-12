@@ -29,7 +29,8 @@ let User = sequelize.define('joueurs', {
     email: Sequelize.STRING,
     password: Sequelize.STRING,
     win:Sequelize.INTEGER,
-    lose:Sequelize.INTEGER
+    lose:Sequelize.INTEGER,
+    isOnline:Sequelize.BOOLEAN
 });
 User.sync();
 
@@ -51,6 +52,7 @@ const addUser = async (user)=>{
     if (genPass === null)
         return null;
     user.password=genPass;
+    user.isOnline = false;
     return User.create(user).catch(()=>{return null});
 };
 const checkUser = async (email, password) =>{
@@ -58,6 +60,24 @@ const checkUser = async (email, password) =>{
     let user = await User.findOne({ where: {email:email} }).catch(()=> {return null});
     if (user===null)
         return false;
-    return  bCrypt.compareSync(password, user.password) === true ? user : false;
+    let crypt =  bCrypt.compareSync(password, user.password);
+    if (crypt){
+        user.isOnline = true;
+       await user.save();
+        return user;
+    }
+    return false;
 };
-module.exports = {User,hashPassword,checkUser,addUser};
+const getUserById = async (id) => {
+    let user = await User.findOne({ where: {id:id} }).catch(()=> {return null});
+    if (user===null)
+        return false;
+    return user;
+};
+const getUserByEmail = async (email) => {
+    let user = await User.findOne({ where: {email:email} }).catch(()=> {return null});
+    if (user===null)
+        return false;
+    return user;
+};
+module.exports = {User,hashPassword,checkUser,addUser,getUserByEmail,getUserById};
