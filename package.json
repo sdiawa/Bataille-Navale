@@ -42,7 +42,6 @@
     ]
   },
   "devDependencies": {
-    "prop-types": "^15.7.2",
-    "react-materialize": "^3.8.3"
+    "prop-types": "^15.7.2"
   }
 }

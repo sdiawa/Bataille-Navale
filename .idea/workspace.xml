@@ -10,50 +10,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19e44116-c9f1-4016-84fe-a1678ed930da" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Api/core/Game.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api/core/Grids.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api/core/Player.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/Main.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/Board.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/Grid.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/Square.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/1/Torpilleur.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/1/tor_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/2/Patrouilleur.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/2/pat_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/2/pat_02.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/3/Croiseur.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/3/cru_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/3/cru_02.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/3/cru_03.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/4/PorteAvion.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/4/com_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/4/com_02.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/4/com_03.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/4/com_04.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/5/SousMarin.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/5/sub_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/5/sub_02.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/5/sub_03.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/5/sub_04.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/5/sub_05.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/Bateau.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/interface/bateaux/hit.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Utils/Sockets.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/Bataille-Navale.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Api/db/Config.js" beforeDir="false" afterPath="$PROJECT_DIR$/Api/db/Config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Api/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Api/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Api/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Api/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Api/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/Menu.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Menu.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/NewGame.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/NewGame.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/Register.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Register.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/interface/Board.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/interface/Board.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +37,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="Api" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -98,10 +61,13 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="12.16.1" />
     <property name="last.edited.regexp" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/Components/interface/bateaux" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs.jest.jest_package" value="$PROJECT_DIR$/node_modules/react-scripts" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -113,21 +79,21 @@
       <recent name="https://github.com/senhaji93/test.git" />
       <recent name="https://git.heroku.com/uvsq-bataille-navale-back.git" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/Components/interface/bateaux" />
-      <recent name="$PROJECT_DIR$/src/Components/interface/bateaux/3" />
-      <recent name="$PROJECT_DIR$/src/Components/interface/bateaux/4" />
-      <recent name="$PROJECT_DIR$/src/Components/interface/bateaux/5" />
-      <recent name="$PROJECT_DIR$/src/Components/interface/bateaux/2" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/Components/interface/bateaux" />
       <recent name="$PROJECT_DIR$/src/Components/interface/bateaux/4" />
       <recent name="$PROJECT_DIR$" />
       <recent name="C:\Users\sekou\WebstormProjects\bn-front\src\Components" />
     </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src/Components/interface/bateaux" />
+      <recent name="$PROJECT_DIR$/src/Components/interface/bateaux/3" />
+      <recent name="$PROJECT_DIR$/src/Components/interface/bateaux/4" />
+      <recent name="$PROJECT_DIR$/src/Components/interface/bateaux/5" />
+    </key>
   </component>
-  <component name="RunManager" selected="npm.start">
+  <component name="RunManager" selected="npm.npm start">
     <configuration name="App.test.js" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <node-options value="" />
@@ -167,6 +133,7 @@
         <item itemvalue="Jest.App.test.js" />
         <item itemvalue="npm.start" />
         <item itemvalue="Jest.App.test.js" />
+        <item itemvalue="npm.start" />
       </list>
     </recent_temporary>
   </component>
@@ -233,30 +200,30 @@
       <screen x="0" y="28" width="1366" height="706" />
     </state>
     <state x="466" y="139" width="424" height="491" key="FileChooserDialogImpl/0.28.1366.706@0.28.1366.706" timestamp="1586625920359" />
-    <state width="1318" height="120" key="GridCell.Tab.0.bottom" timestamp="1586667152442">
+    <state width="1318" height="120" key="GridCell.Tab.0.bottom" timestamp="1586734392839">
       <screen x="0" y="28" width="1366" height="706" />
     </state>
     <state width="1345" height="142" key="GridCell.Tab.0.bottom/0.0.1366.728/1366.0.1280.984@0.0.1366.728" timestamp="1584591419386" />
     <state width="1345" height="31" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1584653044777" />
-    <state width="1318" height="120" key="GridCell.Tab.0.bottom/0.28.1366.706@0.28.1366.706" timestamp="1586667152442" />
-    <state width="1318" height="120" key="GridCell.Tab.0.center" timestamp="1586667152440">
+    <state width="1318" height="120" key="GridCell.Tab.0.bottom/0.28.1366.706@0.28.1366.706" timestamp="1586734392839" />
+    <state width="1318" height="120" key="GridCell.Tab.0.center" timestamp="1586734392838">
       <screen x="0" y="28" width="1366" height="706" />
     </state>
     <state width="1345" height="142" key="GridCell.Tab.0.center/0.0.1366.728/1366.0.1280.984@0.0.1366.728" timestamp="1584591419386" />
     <state width="1345" height="31" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1584653044776" />
-    <state width="1318" height="120" key="GridCell.Tab.0.center/0.28.1366.706@0.28.1366.706" timestamp="1586667152440" />
-    <state width="1318" height="120" key="GridCell.Tab.0.left" timestamp="1586667152439">
+    <state width="1318" height="120" key="GridCell.Tab.0.center/0.28.1366.706@0.28.1366.706" timestamp="1586734392838" />
+    <state width="1318" height="120" key="GridCell.Tab.0.left" timestamp="1586734392838">
       <screen x="0" y="28" width="1366" height="706" />
     </state>
     <state width="1345" height="142" key="GridCell.Tab.0.left/0.0.1366.728/1366.0.1280.984@0.0.1366.728" timestamp="1584591419386" />
     <state width="1345" height="31" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1584653044776" />
-    <state width="1318" height="120" key="GridCell.Tab.0.left/0.28.1366.706@0.28.1366.706" timestamp="1586667152439" />
-    <state width="1318" height="120" key="GridCell.Tab.0.right" timestamp="1586667152440">
+    <state width="1318" height="120" key="GridCell.Tab.0.left/0.28.1366.706@0.28.1366.706" timestamp="1586734392838" />
+    <state width="1318" height="120" key="GridCell.Tab.0.right" timestamp="1586734392839">
       <screen x="0" y="28" width="1366" height="706" />
     </state>
     <state width="1345" height="142" key="GridCell.Tab.0.right/0.0.1366.728/1366.0.1280.984@0.0.1366.728" timestamp="1584591419386" />
     <state width="1345" height="31" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1584653044777" />
-    <state width="1318" height="120" key="GridCell.Tab.0.right/0.28.1366.706@0.28.1366.706" timestamp="1586667152440" />
+    <state width="1318" height="120" key="GridCell.Tab.0.right/0.28.1366.706@0.28.1366.706" timestamp="1586734392839" />
     <state width="1318" height="174" key="GridCell.Tab.1.bottom" timestamp="1584694163919">
       <screen x="0" y="28" width="1366" height="706" />
     </state>

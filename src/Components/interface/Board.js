@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import _ from 'lodash';
 import io from '../../Utils/Sockets';
 import hitImg from './bateaux/hit.png';
-import { Button} from 'react-materialize';
 import Torpilleur from "./bateaux/1/Torpilleur";
 import Patrouilleur from "./bateaux/2/Patrouilleur";
 import Croiseur from "./bateaux/3/Croiseur";
@@ -430,9 +429,9 @@ export default class Board extends Component {
                 />
                 {!gameReady && <div className={'form-group'}>{choixBateaux}</div>}
                 {!gameReady && <div>
-                    <Button className={'btn btn-info' } style={{
+                    <button className={'btn btn-info' } style={{
                         margin: '10px'
-                    }} onClick={this.changeOrientation}>{isVertical ? ORIENTATION_BATEAU.VERTICAL : ORIENTATION_BATEAU.HORIZONTAL}</Button>
+                    }} onClick={this.changeOrientation}>{isVertical ? ORIENTATION_BATEAU.VERTICAL : ORIENTATION_BATEAU.HORIZONTAL}</button>
                 </div>}
             </div>
 
