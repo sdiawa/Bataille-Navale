@@ -13,6 +13,8 @@ class  Login extends Component{
             regSucc:this.props.location.state ? this.props.location.state.regSucc:false,
             logoutSucc:this.props.location.state? this.props.location.state.logoutSucc:false,
             errors: [{
+
+                'isLoading':false,
                 'email': [
                     {isActive: false, type: 'emailNotBlank', message: 'L\'email ne doit pas être vide.'},
                     {isActive: false, type: 'emailValid', message: 'L\'email n\'est pas valide.'}
@@ -36,7 +38,7 @@ class  Login extends Component{
     }
 
     render() {
-         const {errors,email,password,regSucc,logoutSucc} = this.state;
+         const {errors, email, password, regSucc, logoutSucc} = this.state;
         return(
             <div className="container">
                 <div className="row">
@@ -44,6 +46,7 @@ class  Login extends Component{
                         <div className="card-header text-center bg-transparent">
                             <img src={Logo} className="img" alt="logo" width="256" height="128"/>
                         </div>
+                        {errors[0].isLoading && <FontAwesomeIcon color={'#336699'} className="mx-auto" spin={true} size={'6x'}  icon={['fas','spinner']} />}
                         {errors[0].badCredential[0].isActive && <div className="alert alert-danger">
                             {errors[0].badCredential[0].message}
                         </div>}
@@ -132,6 +135,7 @@ class  Login extends Component{
             return ({
                 errors: prevState.errors.map(
                     item => {
+                        item.isLoading =true;
                         item.email[0].isActive = email.trim()==="";
                         item.email[1].isActive =!validEmailRegex.test(email);
                         item.email.forEach(value => {
@@ -150,6 +154,7 @@ class  Login extends Component{
 
         });
         if (!isError){
+            //http://localhost:8000/api/login?email
             await Axios.get('https://uvsq-bataille-navale-back.herokuapp.com/api/login?email='+email+'&password='+password,
                 {headers: {'Access-Control-Allow-Origin': '*'}}
                 )
@@ -167,10 +172,14 @@ class  Login extends Component{
                     *  Status = 409
                     */
                     if (res.response && res.response.status === 409)
-                        return this.setState(async (prevState) => {
-                            return (
+                        return  this.setState(async (prevState) => {
+                            return(
                                 {
-                                    errors: await prevState.errors.map(value => value.badCredential[0].isActive = true)
+                                    errors: await prevState.errors.map(value =>
+                                    {
+                                        value.badCredential[0].isActive = true;
+                                        value.isLoading =false; return value;
+                                    } )
                                 }
                             );
                         });
@@ -181,11 +190,24 @@ class  Login extends Component{
                     this.setState(async (prevState) => {
                         return (
                             {
-                                errors: await prevState.errors.map(value => value.internalError[0].isActive = true)
+                                errors: await prevState.errors.map(value =>
+                                {
+                                    value.internalError[0].isActive = true;
+                                    value.isLoading =false; return value;
+                                } )
                             }
                         );
                     });
                 })
+        }
+        else {
+            this.setState(async (prevState) => {
+                return (
+                    {
+                        errors: await prevState.errors.map(value =>value.isLoading =false)
+                    }
+                );
+            });
         }
     };
 }
