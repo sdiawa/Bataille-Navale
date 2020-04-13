@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const port = process.env.PORT || 8000;
 const cors = require("cors");
 const route = require("./router/ExpressRouter");
-const {addPlayer,newGame,removePlayer,getPlayer,getLastGame,updateGameGrids} = require('./core/Game');
+const {addPlayer,newGame,removePlayer,getPlayer,getMyGame,updateGameGrids} = require('./core/Game');
 app.use(cors({origin:'*'}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -13,14 +13,15 @@ const http = require('http').createServer(app);
 const server = require('socket.io')(http,{path:"/sockets"});
 const io = server.of("/sockets");
 const handleNewGame = async (socket)=>{
-    if (newGame()){
-        let game = await getLastGame();
-        if (game && (socket.id === game.id || socket.id === game.player2.id)){
+    if (newGame(io.sockets)){
+        let game = await getMyGame(socket.id);
+        if (game){
             await io.sockets[game.player1.id].join(game.id);
             await io.sockets[game.player2.id].join(game.id);
             await io.to(game.id).emit("newGame",{room:game,message:"joueur trouvé"});
         }
     }
+    return false;
 };
 io.on("connection", socket => {
     console.log("new connection");
@@ -30,8 +31,8 @@ io.on("connection", socket => {
             //socket.emit("newGame",{room:getWaiting(),message:"Aucun joueur trouvé"});
             await handleNewGame(socket).catch(error => console.log(error));
         else if (currentPlayer){
-           await io.sockets.connected[currentPlayer.id].disconnect();
-            removePlayer(currentPlayer);
+           await io.sockets[currentPlayer.id].disconnect();
+            await removePlayer(currentPlayer);
             await addPlayer(socket.id,data.email);
             await handleNewGame(socket);
             //socket.emit("newGame",{room:getWaiting(),message:"Aucun joueur trouvé"});
@@ -61,10 +62,10 @@ io.on("connection", socket => {
             }
         }
     });
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
         console.log("Client disconnected");
         if (getPlayer(socket.id))
-        removePlayer(getPlayer(socket.id))
+        await removePlayer(getPlayer(socket.id), socket)
     });
 });
 server.listen(app.listen(port, function () {
