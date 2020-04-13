@@ -39,6 +39,7 @@ export default class Board extends Component {
             size: PropTypes.number,
             squarePx: PropTypes.number,
             disabled:PropTypes.bool,
+            gameReady: PropTypes.bool,
             receivedShot: PropTypes.object,
             roomId: PropTypes.string
         };
@@ -48,6 +49,7 @@ export default class Board extends Component {
         return {
             size: 10,
             squarePx: 40,
+            gameReady:false,
             disabled:false
         };
     }
@@ -59,7 +61,6 @@ export default class Board extends Component {
             bateaux: [],
             isVertical: ORIENTATION_BATEAU.isVertical,
             shipAdded: true,
-            gameReady: false,
             listChoixBateaux :[TYPE_BATEAU.TORPILLEUR,TYPE_BATEAU.PATROUILLEUR,TYPE_BATEAU.CROISEUR,
                 TYPE_BATEAU.PORTE_AVION,TYPE_BATEAU.SOUS_MARIN],
             currentShip:TYPE_BATEAU.TORPILLEUR,
@@ -92,7 +93,6 @@ export default class Board extends Component {
                 x: nextProps.receivedShot.x,
                 y: nextProps.receivedShot.y
             };
-            console.log('Shot Position update: ', shotPos);
             this.shipSinked(null, shotPos);
         }
     }
@@ -208,7 +208,7 @@ export default class Board extends Component {
         };
     };
 
-    // Check the position for full Ship size
+    // verifie si la position du batteau courant est valide
 
     positionsShip =(ship) =>{
         const positions = [];
@@ -360,7 +360,7 @@ export default class Board extends Component {
 
     render() {
         const affichageBateaux = [];
-        const {listChoixBateaux,gameReady,currentShip,bateaux,isVertical,shipAdded} = this.state;
+        const {listChoixBateaux,currentShip,bateaux,isVertical,shipAdded} = this.state;
         // Build the ship image
         const choixBateaux =listChoixBateaux.map((value,key) => {
             return (
@@ -427,8 +427,8 @@ export default class Board extends Component {
                     addShip={this.addShip}
                     shipAdded={shipAdded}
                 />
-                {!gameReady && <div className={'form-group'}>{choixBateaux}</div>}
-                {!gameReady && <div>
+                {!this.props.gameReady && <div className={'form-group'}>{choixBateaux}</div>}
+                {!this.props.gameReady && <div>
                     <button className={'btn btn-info' } style={{
                         margin: '10px'
                     }} onClick={this.changeOrientation}>{isVertical ? ORIENTATION_BATEAU.VERTICAL : ORIENTATION_BATEAU.HORIZONTAL}</button>

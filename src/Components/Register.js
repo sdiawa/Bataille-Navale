@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import Axios from "axios";
 import {withRouter} from "react-router-dom";
 import {withSessionContext} from "../Utils/SessionProvider";
-
+import io from "../Utils/Sockets";
 class Register extends Component {
     constructor(props) {
         super(props);
@@ -44,6 +44,9 @@ class Register extends Component {
         };
         this.handleInputChange = this.handleInputChange.bind(this);
     };
+    componentDidMount() {
+        io.disconnect();
+    }
 
     handleInputChange = (event) => {
         event.preventDefault();

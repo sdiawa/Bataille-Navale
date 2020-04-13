@@ -4,6 +4,7 @@ import {withSessionContext} from "../Utils/SessionProvider";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {Link,withRouter} from "react-router-dom";
 import Axios from "axios";
+import io from "../Utils/Sockets";
 class  Login extends Component{
     constructor(props) {
         super(props);
@@ -33,6 +34,7 @@ class  Login extends Component{
         };
     }
     componentDidMount() {
+        io.disconnect();
         if (this.props.context.isLogged)
             return this.props.history.push('/')
     }
@@ -163,6 +165,7 @@ class  Login extends Component{
                     {
                         const data = res.data;
                         context.updateSession({ nom:data.nom,prenom:data.prenom,email:data.email });
+                        io.connect();
                         return myHistory.push("/");
                     }
                 })

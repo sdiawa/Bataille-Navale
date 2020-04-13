@@ -11,6 +11,17 @@
   <component name="ChangeListManager">
     <list default="true" id="19e44116-c9f1-4016-84fe-a1678ed930da" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Api/core/Game.js" beforeDir="false" afterPath="$PROJECT_DIR$/Api/core/Game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Api/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Logout.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Logout.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/NewGame.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/NewGame.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Profile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Register.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Register.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/interface/Board.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/interface/Board.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Utils/Sockets.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utils/Sockets.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -32,7 +43,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Api" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -195,30 +206,30 @@
       <screen x="0" y="28" width="1366" height="706" />
     </state>
     <state x="466" y="139" width="424" height="491" key="FileChooserDialogImpl/0.28.1366.706@0.28.1366.706" timestamp="1586625920359" />
-    <state width="1318" height="139" key="GridCell.Tab.0.bottom" timestamp="1586735186590">
+    <state width="1318" height="176" key="GridCell.Tab.0.bottom" timestamp="1586760389200">
       <screen x="0" y="28" width="1366" height="706" />
     </state>
     <state width="1345" height="142" key="GridCell.Tab.0.bottom/0.0.1366.728/1366.0.1280.984@0.0.1366.728" timestamp="1584591419386" />
     <state width="1345" height="31" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1584653044777" />
-    <state width="1318" height="139" key="GridCell.Tab.0.bottom/0.28.1366.706@0.28.1366.706" timestamp="1586735186590" />
-    <state width="1318" height="139" key="GridCell.Tab.0.center" timestamp="1586735186590">
+    <state width="1318" height="176" key="GridCell.Tab.0.bottom/0.28.1366.706@0.28.1366.706" timestamp="1586760389200" />
+    <state width="1318" height="176" key="GridCell.Tab.0.center" timestamp="1586760389200">
       <screen x="0" y="28" width="1366" height="706" />
     </state>
     <state width="1345" height="142" key="GridCell.Tab.0.center/0.0.1366.728/1366.0.1280.984@0.0.1366.728" timestamp="1584591419386" />
     <state width="1345" height="31" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1584653044776" />
-    <state width="1318" height="139" key="GridCell.Tab.0.center/0.28.1366.706@0.28.1366.706" timestamp="1586735186589" />
-    <state width="1318" height="139" key="GridCell.Tab.0.left" timestamp="1586735186589">
+    <state width="1318" height="176" key="GridCell.Tab.0.center/0.28.1366.706@0.28.1366.706" timestamp="1586760389200" />
+    <state width="1318" height="176" key="GridCell.Tab.0.left" timestamp="1586760389199">
       <screen x="0" y="28" width="1366" height="706" />
     </state>
     <state width="1345" height="142" key="GridCell.Tab.0.left/0.0.1366.728/1366.0.1280.984@0.0.1366.728" timestamp="1584591419386" />
     <state width="1345" height="31" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1584653044776" />
-    <state width="1318" height="139" key="GridCell.Tab.0.left/0.28.1366.706@0.28.1366.706" timestamp="1586735186589" />
-    <state width="1318" height="139" key="GridCell.Tab.0.right" timestamp="1586735186590">
+    <state width="1318" height="176" key="GridCell.Tab.0.left/0.28.1366.706@0.28.1366.706" timestamp="1586760389199" />
+    <state width="1318" height="176" key="GridCell.Tab.0.right" timestamp="1586760389200">
       <screen x="0" y="28" width="1366" height="706" />
     </state>
     <state width="1345" height="142" key="GridCell.Tab.0.right/0.0.1366.728/1366.0.1280.984@0.0.1366.728" timestamp="1584591419386" />
     <state width="1345" height="31" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1584653044777" />
-    <state width="1318" height="139" key="GridCell.Tab.0.right/0.28.1366.706@0.28.1366.706" timestamp="1586735186590" />
+    <state width="1318" height="176" key="GridCell.Tab.0.right/0.28.1366.706@0.28.1366.706" timestamp="1586760389200" />
     <state width="1318" height="174" key="GridCell.Tab.1.bottom" timestamp="1584694163919">
       <screen x="0" y="28" width="1366" height="706" />
     </state>
