@@ -1,10 +1,11 @@
-import React, {Component} from "react";
+import React, {Component,Fragment} from "react";
 import {withSessionContext} from "../Utils/SessionProvider";
-import {withRouter} from "react-router-dom";
+import {withRouter,Prompt} from "react-router-dom";
 import io from '../Utils/Sockets';
 import _ from "lodash";
 import Grid from "./interface/Grid";
 import Board from "./interface/Board";
+import {Modal} from "react-bootstrap";
 class NewGame extends Component{
     constructor(props) {
         super(props);
@@ -23,17 +24,18 @@ class NewGame extends Component{
             allShotPosition: [],
             hitPos: [],
             missedPos: [],
-            gameOverModal: false
+            gameOver: false
         };
     }
     componentDidMount() {
+        io.disconnect();
+        io.connect();
         const {inLobby} = this.state;
         if (!this.props.context.isLogged){
             return this.props.history.push('/login',{regSucc:false,logoutSucc:false});
         }
-        // found player
+        // joueur trouvé
         io.on('newGame', async data => {
-            console.log(io.id)
             await this.setState(
                 {
                     inLobby:false,
@@ -47,7 +49,7 @@ class NewGame extends Component{
         });
         if (inLobby)
             io.emit('newPlayer',{email:this.props.context.session.email});
-        // Listen from server whenever all ships is added (Ourself);
+        // Vérifie si tous les bateaux sont ajoutés;
         io.on('gameReady', (data) => {
             this.setState({
                 gameReady: data
@@ -55,10 +57,9 @@ class NewGame extends Component{
             console.log('gameReady', data);
         });
         io.on('leave',()=>this.setState({gameReady:false,gameStarted:false,message:'Connection perdue avec l\'invité'}));
-        // When the other player added all ships
 
+        // Opposant prêt
         io.on('opponentReady', (data) => {
-            console.log('Player 2 is ready: ', data);
             this.setState({
                 opponentReady: data
             });
@@ -79,13 +80,11 @@ class NewGame extends Component{
         io.on('trackingGame', (data) => {
             if (data.hitPos) {
                 this.setState({
-                    // hitPos: the good shot position (hit a ship)
                     hitPos: data.hitPos
                 });
             }else {
                 if (data.missedPos) {
                     this.setState({
-                        // hitPos: the good shot position (hit a ship)
                         missedPos: data.missedPos
                     });
                 }
@@ -95,7 +94,7 @@ class NewGame extends Component{
 
         io.on('gameOver', (data) => {
             this.setState({
-                gameOverModal: true
+                gameOver: true
             });
         });
 
@@ -132,16 +131,21 @@ class NewGame extends Component{
     };
 
 
-    closeGameOver=()=>{
+    nouvellePartie=(event)=>{
+        event.preventDefault();
+        io.disconnect();
+        io.connect();
+        io.emit('newPlayer',{email:this.props.context.session.email});
         this.setState({
-            gameOverModal: false,
-            gameStart: false,
+            gameOver: false,
+            message:'Recherche de joueurs...',
+            gameStarted: false,
+            inLobby:true,
             roomId: '',
-            roomCreated: '',
             hitPos: [],
             allShotPosition: [],
             myTurn: false,
-            player2Ready: false,
+            opponentReady: false,
             gameReady: false
         });
     };
@@ -149,6 +153,7 @@ class NewGame extends Component{
         const {
             message,
             inLobby,
+            gameOver,
             gameStarted,
             gameReady,
             opponentReady,
@@ -159,26 +164,55 @@ class NewGame extends Component{
             myTurn,
         } = this.state;
         const tableau = (
-            <div>
-                {(gameReady && opponentReady) ? <Grid
-                    key={2}
-                    squarePx={this._size}
-                    playerShoot={this.playerShoot}
-                    hitPos={hitPos} missedPos={missedPos} ships={[]} /> : <div>
-                    <h5 style={{
-                    'textAlign': 'center'
-                }}>Placer vos bateaux</h5>
+            (gameOver) ?
+                    <Modal show={gameOver}
+                           centered aria-labelledby="gameOver">
+                        <Modal.Header>
+                            <Modal.Title id="gameOver"
+                                         className={hitPos.length >= 15 ? ' mx-auto text-success' : 'mx-auto text-danger'}>
+                                {hitPos.length >= 15 ? 'Vous avez gagné' : 'Vous avez perdu'}
+                            </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Footer>
+                            <button className={'btn btn-primary'} onClick={this.nouvellePartie}>Nouvelle partie</button>
+                            <button className={'btn btn-secondary'}
+                                    onClick={this.fermerGameOver}>Fermer
+                            </button>
+                        </Modal.Footer>
+                    </Modal>
+                    :
+                    <div>
 
-                </div>}
-            </div>
+                        {(gameReady && opponentReady) ? <div><div className={'text-danger h2'}>Ennemie</div><Grid
+                            key={2}
+                            squarePx={this._size}
+                            playerShoot={this.playerShoot}
+                            hitPos={hitPos} missedPos={missedPos} ships={[]}/></div> :
+                            opponentReady ? <div className="h4 text-center alert alert-info">
+                            Votre adversaire est prêt
+                        </div>: gameReady?<div className="h4 text-center alert alert-secondary">
+                                Attente de l'adversaire
+                            </div>:<div className="h4 text-center alert alert-secondary">
+                                Placer vos bateaux
+                            </div>
+                        }
+                    </div>
         );
         const game=(
         <div className="container">
             <div className="row">
+                <div className="col-md-4 mx-auto">
+                    {gameReady && myTurn && opponentReady ? <div className="h4 alert alert-success">Votre tours</div> :
+                        gameReady && !myTurn && opponentReady && <div className="h4 alert alert-info">L'adversaire joue</div>}
+                </div>
+            </div>
+            <div className="row">
                 <div className="col-sm-6">
+                    <div className={'text-info h2'}>Ma carte</div>
                     <Board
                         key={1}
                         squarePx={this._size}
+                        gameReady={gameReady}
                         roomId={roomId}
                         disabled={gameReady}
                         receivedShot={receivedShot}/>
@@ -187,8 +221,7 @@ class NewGame extends Component{
                 <div className="col-sm-6">
                     {tableau}
                     {gameReady && opponentReady ?
-                        <h5>{'Select and click above to fire to '}<strong>Opponent</strong>{' territory'}</h5> : null}
-                    {gameReady && myTurn && opponentReady ? <h4 className="animated zoomIn">Your Turn</h4> : null}
+                        <h5>{'Détruisez les navires ennemies pour gagner '}</h5> : null}
                 </div>
             </div>
         </div>
@@ -214,41 +247,14 @@ class NewGame extends Component{
                 </div>
             </div>
         );
-        /*const customStyles = {
-            content: {
-                position: 'fixed',
-                top: '50%',
-                left: '50%',
-                right: 'auto',
-                bottom: 'auto',
-                marginRight: '-50%',
-                transform: 'translate(-50%, -50%)',
-                wordWrap: 'break-word',
-                width: '65%',
-                background: '#eee',
-                display: 'inline-block'
-            }
-        };*/
-
         return(
-            <div>
-                {gameStarted ? game : lobby}
+            <Fragment>
+                <Prompt message={"Voulez-vous vraiment quiter?"}/>
+                <Fragment>
+                    {gameStarted ? game : lobby}
 
-                {/* Modal pop up at the end to show result */}
-                {/* <Modals
-                    isOpen={this.state.gameOverModal}
-                    shouldCloseOnOverlayClick={false}
-                    style={customStyles}>
-                    {hitPos.length === 22 ? <h2>Opponent's ships were destroyed! You won!</h2> : <h2>All your ships were sinked! You lost</h2>}
-                    <Button
-                        style={{
-                            display: 'block',
-                            marginLeft: '40%',
-                            marginTop: '20px'
-                        }}
-                        onClick={this.closeGameOver}>Close</Button>
-                </Modals>*/}
-            </div>
+                </Fragment>
+            </Fragment>
         );
     }
 
@@ -259,9 +265,14 @@ class NewGame extends Component{
     };
     newSearch = (event)=> {
         event.preventDefault();
+        io.disconnect();
         io.connect();
         io.emit('newPlayer',{email:this.props.context.session.email});
         this.setState({inLobby:true,message:'Recherche de joueurs...'});
+    };
+    fermerGameOver = (event)=>{
+        event.preventDefault();
+        this.props.history.push("/");
     }
 }
 export default withRouter(withSessionContext(NewGame));

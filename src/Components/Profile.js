@@ -3,6 +3,7 @@ import Logo from "./logo.jpg";
 import {withSessionContext} from "../Utils/SessionProvider";
 import {withRouter} from "react-router-dom";
 
+import io from "../Utils/Sockets";
 class  Profile extends Component{
     constructor(props) {
         super(props);
@@ -11,6 +12,7 @@ class  Profile extends Component{
         }
     };
     componentDidMount(){
+        io.disconnect();
         if (!this.props.context.isLogged){
             return this.props.history.push('/login',{regSucc:false,logoutSucc:false});
         }else

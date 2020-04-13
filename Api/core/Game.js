@@ -32,10 +32,12 @@ const updateGameGrids = (roomId,grid,isPlayer1)=>{
     return false;
 };
 //rétirer joueur à la salle d'attente
-const removePlayer = (player,socket) =>{
+const removePlayer = async (player,socket) =>{
     if (inWaitingRoom(player))
         clearWaitingRoom(player);
-    if (Games.some(value=>value.player1===player || value.player2===player)){
+    let game = Games.find(value=>value.player1===player || value.player2===player);
+    if (game){
+        await socket.broadcast.to(game.id).emit('leave');
         Games = Games.filter(value=>value.player1!==player || value.player2!==player);
     }
     if (Players.includes(player))
@@ -47,9 +49,10 @@ const inWaitingRoom = (player) => {
 };
 
 //créer une session de jeu entre 2 joueurs de la salle d'attente
-const newGame = ()=>{
+const newGame =  (sockets)=>{
     let player1,player2,winner;
     let status = "STARTED";
+    waitingRoom = waitingRoom.filter(async value => await sockets[value.id] !== undefined);
     if (waitingRoom.length >= 2){
         player1 = waitingRoom[0];
         player2 = waitingRoom[1];
@@ -69,8 +72,8 @@ const getPlayer = (id)=>{
     return Players.find(value => value.id === id)
 };
 // retourne un jeu en cours
-const getGameById = (id)=>{
-    return Games.find(value => value.id === id)
+const getMyGame = (id)=>{
+    return Games.find(value => (value.player1.id === id || value.player2.id === id))
 };
 // retourne un jeu en cours
 const getLastGame = ()=>{
@@ -96,4 +99,4 @@ const joinWaitingRoom = (player) => {
 const clearWaitingRoom = (player)=> {
     waitingRoom = waitingRoom.filter(value => value.id !== player.id)
 };
-module.exports = {addPlayer,joinWaitingRoom,removePlayer,newGame,getWaiting,getPlayer,getLastGame,updateGameGrids};
+module.exports = {getPlayers,getMyGame,addPlayer,joinWaitingRoom,removePlayer,newGame,getWaiting,getPlayer,getLastGame,updateGameGrids};
