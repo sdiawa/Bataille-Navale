@@ -1,8 +1,8 @@
 import React, {Component} from "react";
 import Axios from "axios";
-import {withRouter} from "react-router-dom";
+import {Redirect, withRouter} from "react-router-dom";
 import {withSessionContext} from "../Utils/SessionProvider";
-import io from "../Utils/Sockets";
+
 class Register extends Component {
     constructor(props) {
         super(props);
@@ -44,9 +44,6 @@ class Register extends Component {
         };
         this.handleInputChange = this.handleInputChange.bind(this);
     };
-    componentDidMount() {
-        io.disconnect();
-    }
 
     handleInputChange = (event) => {
         event.preventDefault();
@@ -105,6 +102,7 @@ class Register extends Component {
                 }
             );
         });
+        //http://localhost:8000/api/register
         if (!isError) {
             await Axios.post('https://uvsq-bataille-navale-back.herokuapp.com/api/register', {
                 nom,
@@ -114,7 +112,7 @@ class Register extends Component {
             }).then(res => {
                 //reponse ok crée utilisateur et rédirige vers login
                 if (res.status === 201) {
-                    return myHistory.push("/login",{regSucc:true});
+                    return myHistory.push("/login", {regSucc: true});
                 }
             }).catch(async (res) => {
                 /*
@@ -147,9 +145,8 @@ class Register extends Component {
 
     render() {
         const {nom, prenom, email, password, confirmPassword, errors} = this.state;
-        if (this.props.context.isLogged){
-            return ""
-        }
+        if (this.props.context.isLogged)
+            return <Redirect to={{pathname: '/'}}/>;
         return (
             < div className="container">
                 < div className="row">
@@ -223,4 +220,5 @@ class Register extends Component {
         )
     }
 }
+
 export default withRouter(withSessionContext(Register));

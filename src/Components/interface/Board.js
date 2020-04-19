@@ -34,11 +34,28 @@ const ORIENTATION_BATEAU = {
 
 export default class Board extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            bateaux: [],
+            isVertical: ORIENTATION_BATEAU.isVertical,
+            shipAdded: true,
+            listChoixBateaux: [TYPE_BATEAU.TORPILLEUR, TYPE_BATEAU.PATROUILLEUR, TYPE_BATEAU.CROISEUR,
+                TYPE_BATEAU.PORTE_AVION, TYPE_BATEAU.SOUS_MARIN],
+            currentShip: TYPE_BATEAU.TORPILLEUR,
+            hitPos: [],
+            missedPos: []
+        };
+
+        this.bateaux = [];
+    }
+
     static get propTypes() {
         return {
             size: PropTypes.number,
             squarePx: PropTypes.number,
-            disabled:PropTypes.bool,
+            disabled: PropTypes.bool,
             gameReady: PropTypes.bool,
             receivedShot: PropTypes.object,
             roomId: PropTypes.string
@@ -49,45 +66,27 @@ export default class Board extends Component {
         return {
             size: 10,
             squarePx: 40,
-            gameReady:false,
-            disabled:false
+            gameReady: false,
+            disabled: false
         };
-    }
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            bateaux: [],
-            isVertical: ORIENTATION_BATEAU.isVertical,
-            shipAdded: true,
-            listChoixBateaux :[TYPE_BATEAU.TORPILLEUR,TYPE_BATEAU.PATROUILLEUR,TYPE_BATEAU.CROISEUR,
-                TYPE_BATEAU.PORTE_AVION,TYPE_BATEAU.SOUS_MARIN],
-            currentShip:TYPE_BATEAU.TORPILLEUR,
-            hitPos: [],
-            missedPos: []
-        };
-
-        this.bateaux = [];
     }
 
     componentDidMount() {
-        io.on('gameOver', (data) => {
+        io.on('gameOver', () => {
             this.setState({
                 hitPos: [],
                 bateaux: [],
-                listChoixBateaux :[TYPE_BATEAU.TORPILLEUR,TYPE_BATEAU.PATROUILLEUR,TYPE_BATEAU.CROISEUR,
-                    TYPE_BATEAU.PORTE_AVION,TYPE_BATEAU.SOUS_MARIN],
+                listChoixBateaux: [TYPE_BATEAU.TORPILLEUR, TYPE_BATEAU.PATROUILLEUR, TYPE_BATEAU.CROISEUR,
+                    TYPE_BATEAU.PORTE_AVION, TYPE_BATEAU.SOUS_MARIN],
                 missedPos: [],
                 gameReady: false
             });
-            console.log('GameOver', data.hitPos.length);
         });
 
-       // Materialize.toast('Adding Ships to your board', 4000);
+        // Materialize.toast('Adding Ships to your board', 4000);
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext){
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if (nextProps.receivedShot !== null) {
             const shotPos = {
                 x: nextProps.receivedShot.x,
@@ -99,13 +98,13 @@ export default class Board extends Component {
 
     // Handle Game
 
-    changeOrientation = ()=> {
-        this.setState(prevState=> {
-            return {isVertical:!prevState.isVertical}
+    changeOrientation = () => {
+        this.setState(prevState => {
+            return {isVertical: !prevState.isVertical}
         });
     };
 
-    sizeShip = (TYPE) =>{
+    sizeShip = (TYPE) => {
         switch (TYPE) {
             case TYPE_BATEAU.TORPILLEUR:
                 return TAILLE_BATEAU.TORPILLEUR;
@@ -121,7 +120,7 @@ export default class Board extends Component {
                 return 0;
         }
     };
-    genererBateau = (ship, key)=> {
+    genererBateau = (ship, key) => {
         switch (ship.type) {
             case TYPE_BATEAU.TORPILLEUR:
                 return (
@@ -186,7 +185,7 @@ export default class Board extends Component {
     //     return Math.floor(Math.random() * (max - min + 1) + min);
     //   }
 
-    createShipWithPos = (TYPE, x, y, orientation = this.state.isVertical)=> {
+    createShipWithPos = (TYPE, x, y, orientation = this.state.isVertical) => {
         const shipSize = this.sizeShip(TYPE);
 
         if (orientation) {
@@ -210,7 +209,7 @@ export default class Board extends Component {
 
     // verifie si la position du batteau courant est valide
 
-    positionsShip =(ship) =>{
+    positionsShip = (ship) => {
         const positions = [];
 
         if (ship.orientation === ORIENTATION_BATEAU.VERTICAL) {
@@ -238,7 +237,7 @@ export default class Board extends Component {
         return positions;
     };
 
-    addShip = (TYPE, x, y, orientation, ships = this.bateaux) =>{
+    addShip = (TYPE, x, y, orientation, ships = this.bateaux) => {
         const newShip = this.createShipWithPos(TYPE, x, y, orientation);
         const posNewShip = this.positionsShip(newShip);
 
@@ -252,15 +251,15 @@ export default class Board extends Component {
                     roomId: this.props.roomId
                 });
 
-               // Materialize.toast('All Ships Added', 4000);
+                // Materialize.toast('All Ships Added', 4000);
             }
 
-            return this.setState(prevState=> {
-                const newChoix =prevState.listChoixBateaux.filter(value => value !== TYPE);
+            return this.setState(prevState => {
+                const newChoix = prevState.listChoixBateaux.filter(value => value !== TYPE);
                 return {
                     bateaux: ships,
                     listChoixBateaux: newChoix,
-                    currentShip: newChoix.length === 0 ? '':newChoix[0],
+                    currentShip: newChoix.length === 0 ? '' : newChoix[0],
                     shipAdded: true
                 };
 
@@ -274,7 +273,7 @@ export default class Board extends Component {
     };
 
     // Check if the pos is available
-    checkAvailable=(x, y, newShip, posNewShip) =>{
+    checkAvailable = (x, y, newShip, posNewShip) => {
         const currentShips = _.flatten(this.allShipsPosition(this.bateaux));
 
         // Check to see if any overlap ?
@@ -287,15 +286,15 @@ export default class Board extends Component {
         return !(overlapPos || !this.checkRange(x, y, newShip));
     };
 
-    allShipsPosition =(ships)=> {
-        return ships.map(ship=> {
+    allShipsPosition = (ships) => {
+        return ships.map(ship => {
             return this.positionsShip(ship);
         });
     };
 
     // Check to see if that is out of range for a boat's size
 
-    checkRange = (x, y, ship) =>{
+    checkRange = (x, y, ship) => {
         if (ship.orientation === ORIENTATION_BATEAU.VERTICAL) {
             if (y <= this.props.size - ship.size) {
                 return true;
@@ -308,34 +307,34 @@ export default class Board extends Component {
 
         return false;
     };
-    shipSinked=(e, shotPosition) =>{
+    shipSinked = (e, shotPosition) => {
         let missedTime = 0;
         let trackShip;
-
-
         _.find(this.bateaux, (ship) => {
             const allPos = this.positionsShip(ship);
             trackShip = ship;
-
             _.find(allPos, (shipPos) => {
-                const isHit = shipPos.x === shotPosition.x &&  shipPos.y === shotPosition.y;
-
+                const isHit = shipPos.x === shotPosition.x && shipPos.y === shotPosition.y;
                 if (isHit) {
                     if (!this.checkIfHit(this.state.hitPos, shotPosition)) {
-                        console.log('HIT');
-                        const hitPos = _.uniq([...this.state.hitPos, Object.assign({}, ship, shotPosition)]);
+                        //console.log('Touché');
+                        const hitPos = _.uniq([...this.state.hitPos, Object.assign({}, ship, shotPosition, {mean: this.getHitmean(ship.size - 1, ship.type)})]);
+                        let shipDown = [];
+                        hitPos.forEach(value => {
+                            if (value.mean <= 0) shipDown.push({type: value.type})
+                        });
                         this.setState({
                             hitPos: hitPos
                         });
                         const data = {
                             hitPos: hitPos,
+                            shipDown: shipDown,
+                            isShipDownPos: false,
+                            shipDownPos: [],
                             shotPosition: shotPosition,
                             roomId: this.props.roomId
                         };
-
                         io.emit('trackingGame', data);
-                    } else {
-                        console.log('Ship was hit already');
                     }
                 } else {
                     missedTime++;
@@ -354,28 +353,28 @@ export default class Board extends Component {
         });
     };
 
-    checkIfHit=(hitPos, shotPosition)=> {
-        return hitPos.find(hit =>  hit.x === shotPosition.x && hit.y === shotPosition.y);
+    checkIfHit = (hitPos, shotPosition) => {
+        return hitPos.find(hit => hit.x === shotPosition.x && hit.y === shotPosition.y);
     };
 
     render() {
         const affichageBateaux = [];
-        const {listChoixBateaux,currentShip,bateaux,isVertical,shipAdded} = this.state;
+        const {listChoixBateaux, currentShip, bateaux, isVertical, shipAdded} = this.state;
         // Build the ship image
-        const choixBateaux =listChoixBateaux.map((value,key) => {
+        const choixBateaux = listChoixBateaux.map((value, key) => {
             return (
 
-                    <div key={key} className="input-group>">
-                        <label>
-                            <input type="radio" value={value}
-                                   checked={currentShip === value}
-                                   onChange={this.handleOptionChange}/>
-                                   {value.toUpperCase() + '('+this.sizeShip(value)+')'}
-                        </label>
-                    </div>
+                <div key={key} className="input-group>">
+                    <label>
+                        <input type="radio" value={value}
+                               checked={currentShip === value}
+                               onChange={this.handleOptionChange}/>
+                        {value.toUpperCase() + '(' + this.sizeShip(value) + ')'}
+                    </label>
+                </div>
             )
         });
-        bateaux.forEach((item,index)=>affichageBateaux.push(this.genererBateau(item, index)));
+        bateaux.forEach((item, index) => affichageBateaux.push(this.genererBateau(item, index)));
         return (
             <div style={{
                 position: 'relative',
@@ -396,7 +395,7 @@ export default class Board extends Component {
                             top: `${this.props.squarePx * shinkPos.y}px`,
                             zIndex: '2'
                         }} src={hitImg}
-                         alt={''}/>
+                             alt={''}/>
                     );
                 })}
 
@@ -420,7 +419,7 @@ export default class Board extends Component {
                 <Grid
                     size={this.props.size}
                     noMissed={true}
-                    squarePx = {this.props.squarePx}
+                    squarePx={this.props.squarePx}
                     ships={affichageBateaux}
                     disabled={this.props.disabled}
                     currentShip={currentShip}
@@ -429,19 +428,28 @@ export default class Board extends Component {
                 />
                 {!this.props.gameReady && <div className={'form-group'}>{choixBateaux}</div>}
                 {!this.props.gameReady && <div>
-                    <button className={'btn btn-info' } style={{
+                    <button className={'btn btn-info'} style={{
                         margin: '10px'
-                    }} onClick={this.changeOrientation}>{isVertical ? ORIENTATION_BATEAU.VERTICAL : ORIENTATION_BATEAU.HORIZONTAL}</button>
+                    }}
+                            onClick={this.changeOrientation}>{isVertical ? ORIENTATION_BATEAU.VERTICAL : ORIENTATION_BATEAU.HORIZONTAL}</button>
                 </div>}
             </div>
 
         );
     }
 
-    handleOptionChange= (changeEvent) =>{
+    handleOptionChange = (changeEvent) => {
         this.setState({
             currentShip: changeEvent.target.value
         });
     };
 
+    getHitmean = (size, type) => {
+        const {hitPos} = this.state;
+        let res = size;
+        hitPos.forEach(value => {
+            if (type === value.type) res--
+        });
+        return res;
+    }
 }

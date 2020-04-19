@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import io from '../../Utils/Sockets';
 import PropTypes from 'prop-types';
+
 const TYPE_BATEAU = {
     TORPILLEUR: 'torpilleur',
     PATROUILLEUR: 'patrouilleur',
@@ -22,6 +23,14 @@ let SHIPS_PROTOTYPE = BATEAUX.slice();
 
 export default class Square extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            hover: false
+        };
+    }
+
     static get propTypes() {
         return {
             Xposition: PropTypes.number.isRequired,
@@ -34,21 +43,13 @@ export default class Square extends Component {
         };
     }
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            hover: false
-        };
-    }
-
     componentDidMount() {
-        io.on('gameOver', (data) => {
+        io.on('gameOver', () => {
             SHIPS_PROTOTYPE = BATEAUX.slice();
         });
     }
 
-    handleClick =(e)=> {
+    handleClick = (e) => {
         e.preventDefault();
 
         if (!CURRENTSHIP) {
@@ -59,7 +60,7 @@ export default class Square extends Component {
 
         if (this.props.addShip) {
             if (this.props.currentShip)
-                CURRENTSHIP= this.props.currentShip;
+                CURRENTSHIP = this.props.currentShip;
             this.props.addShip(CURRENTSHIP, this.props.Xposition, this.props.Yposition);
         } else if (this.props.playerShoot) {
             const shotPosition = {
@@ -71,7 +72,7 @@ export default class Square extends Component {
     };
 
     // Hover CSS
-    toggleHover =()=> {
+    toggleHover = () => {
         this.setState({
             hover: !this.state.hover
         });
@@ -90,9 +91,11 @@ export default class Square extends Component {
         };
 
         if (this.state.hover) {
-            if (!this.props.disabled)squareStyle.backgroundColor = 'beige';
+            if (!this.props.disabled) squareStyle.backgroundColor = 'beige';
         }
 
-        return <button disabled={this.props.disabled} className={`disabled btn points offset ${this.props.index}`} style={squareStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} onClick={this.handleClick} />;
+        return <button disabled={this.props.disabled} className={`disabled btn points offset ${this.props.index}`}
+                       style={squareStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover}
+                       onClick={this.handleClick}/>;
     }
 }

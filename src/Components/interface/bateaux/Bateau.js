@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+
 export default class Bateau extends Component {
     static get propTypes() {
         return {
@@ -9,7 +10,8 @@ export default class Bateau extends Component {
             Yposition: PropTypes.number
         };
     }
-   static get defaultProps() {
+
+    static get defaultProps() {
         return {
             orientation: 'VERTICAL',
             size: 50
@@ -42,7 +44,7 @@ export default class Bateau extends Component {
                 OTransform: 'rotate(90deg)',
                 MsTransform: 'rotate(90deg)',
                 transform: 'rotate(90deg)',
-               // backgroundColor: '#55ACEE'
+                // backgroundColor: '#55ACEE'
             },
 
             imgHorizontal: {
@@ -53,7 +55,7 @@ export default class Bateau extends Component {
 
         const orientation = this.props.orientation;
         const style = {};
-        const liStyle = orientation === 'VERTICAL' ? styles.liVertical: styles.liHorizontal;
+        const liStyle = orientation === 'VERTICAL' ? styles.liVertical : styles.liHorizontal;
         const imgStyle = orientation === 'VERTICAL' ? styles.imgVertical : styles.imgHorizontal;
 
         if (this.props.Xposition) {
