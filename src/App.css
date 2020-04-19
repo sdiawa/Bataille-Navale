@@ -1,3 +1,7 @@
+.App {
+    text-align: center;
+}
+
 @keyframes progress-indeterminate {
     from {
         left: -25%;
@@ -25,24 +29,27 @@
 @media (min-width: 768px) {
 }
 
-.bootstrap-select button {
-    display: block !important;
-    height: calc(1.5em + .75rem + 2px);
-    color: #495057 !important;
-    background-color: transparent;
-    background-clip: padding-box;
-    border: 1px solid #ced4da !important;
-    border-radius: .25rem !important;
-}
+
 
 @media (prefers-reduced-motion: no-preference) {
+    .progress .indeterminate {
+        position: relative;
+        background: #336699;
+        animation: progress-indeterminate 3s linear infinite;
+    }
 }
-
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.input-icon{
+    position: absolute;
+    z-index: 999;
+    margin: 10px;
+    color: gray;
+}
+.icon-btn{
+    padding-right: 15px;
+}
+.icon-btn i{
+    margin-left: 50px;
+}
+.padded-form-input {
+    padding-left: 30px !important;
 }
