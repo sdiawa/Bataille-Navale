@@ -3,40 +3,44 @@ import io from '../../Utils/Sockets';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import hitImg from './bateaux/hit.png';
+import deadImg from './bateaux/dead.png';
 import Square from "./Square";
+
 export default class Grid extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            missedPos: [],
+        };
+        this.matrix = [];
+    }
 
     static get propTypes() {
         return {
-            noMissed:PropTypes.bool,
+            noMissed: PropTypes.bool,
             size: PropTypes.number,
             disabled: PropTypes.bool,
             squarePx: PropTypes.number,
             ships: PropTypes.array.isRequired,
             addShip: PropTypes.func,
             playerShoot: PropTypes.func,
-            hitPos: PropTypes.array
+            hitPos: PropTypes.array,
+            shipDown: PropTypes.array,
         };
     }
 
-    static get defaultProps(){
+    static get defaultProps() {
         return {
             size: 10,
             squarePx: 50,
-            noMissed:false,
-            disabled:false,
+            noMissed: false,
+            disabled: false,
             ships: [],
             hitPos: [],
+            shipDown: []
         };
-    }
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            missedPos: []
-        };
-        this.matrix = [];
     }
 
     UNSAFE_componentWillMount() {
@@ -48,9 +52,9 @@ export default class Grid extends Component {
             if (data.missedPos) {
                 const missedPos = _.uniqBy([...this.state.missedPos, data.missedPos]);
                 if (!this.props.noMissed)
-                this.setState({
-                    missedPos: missedPos
-                });
+                    this.setState({
+                        missedPos: missedPos
+                    });
             }
         });
     }
@@ -79,7 +83,7 @@ export default class Grid extends Component {
             <div
                 style={{
                     position: 'relative',
-                   // 'backgroundColor': '#55ACEE',
+                    // 'backgroundColor': '#55ACEE',
                     width: `${this.props.size * this.props.squarePx}px`,
                     height: `${this.props.size * this.props.squarePx}px`
                 }}>
@@ -95,17 +99,20 @@ export default class Grid extends Component {
                 {/* Render the target image if Good Shot in Shooting Grid */}
 
                 {this.props.hitPos.map((shinkPos, key) => {
-                    return (
-                        <img className="animated zoomIn" key={key} style={{
-                            width: `${this.props.squarePx}px`,
-                            height: `${this.props.squarePx}px`,
-                            position: 'absolute',
-                            left: `${this.props.squarePx * shinkPos.x}px`,
-                            top: `${this.props.squarePx * shinkPos.y}px`,
-                            zIndex: '2'
-                        }} src={hitImg}
-                         alt={''}/>
-                    );
+                    let dead = false;
+                    if (this.props.shipDown)
+                        this.props.shipDown.forEach(value => {
+                            if (value.type === shinkPos.type) dead = true
+                        });
+                    return (<img className="animated zoomIn" key={key} style={{
+                        width: `${this.props.squarePx}px`,
+                        height: `${this.props.squarePx}px`,
+                        position: 'absolute',
+                        left: `${this.props.squarePx * shinkPos.x}px`,
+                        top: `${this.props.squarePx * shinkPos.y}px`,
+                        zIndex: '2'
+                    }} src={dead ? deadImg : hitImg}
+                                 alt={''}/>);
                 })}
 
                 {this.state.missedPos.map((missed, key) => {

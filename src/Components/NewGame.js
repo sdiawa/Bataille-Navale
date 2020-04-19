@@ -1,23 +1,25 @@
-import React, {Component,Fragment} from "react";
+import React, {Component, Fragment} from "react";
 import {withSessionContext} from "../Utils/SessionProvider";
-import {withRouter,Prompt} from "react-router-dom";
+import {Prompt, Redirect, withRouter} from "react-router-dom";
 import io from '../Utils/Sockets';
 import _ from "lodash";
 import Grid from "./interface/Grid";
 import Board from "./interface/Board";
 import {Modal} from "react-bootstrap";
-class NewGame extends Component{
+
+class NewGame extends Component {
     constructor(props) {
         super(props);
         this._size = 40;
+        this.winner = false;
         this.state = {
-            inLobby:true,
-            message:'Recherche de joueurs...',
-            grid:[],
+            inLobby: true,
+            message: 'Recherche de joueurs...',
+            grid: [],
             gameReady: false,
             roomId: '',
             gameStarted: false,
-            shipSunk: [],
+            shipDown: [],
             opponentReady: false,
             receivedShot: null,
             myTurn: false,
@@ -27,36 +29,41 @@ class NewGame extends Component{
             gameOver: false
         };
     }
-    componentDidMount() {
-        io.disconnect();
+
+    componentWillUnmount = async () => {
+
+        await io.emit("leaveGame", {email: this.props.context.session.email});
+        await io.emit("leaveLobby", {email: this.props.context.session.email});
+    };
+
+    componentDidMount = async () => {
         io.connect();
         const {inLobby} = this.state;
-        if (!this.props.context.isLogged){
-            return this.props.history.push('/login',{regSucc:false,logoutSucc:false});
-        }
         // joueur trouvé
         io.on('newGame', async data => {
             await this.setState(
                 {
-                    inLobby:false,
-                    gameStarted:true,
-                    roomId:data.room.id,
+                    inLobby: false,
+                    gameStarted: true,
+                    roomId: data.room.id,
                     myTurn: io.id === data.room.id,
                     message: data.message,
-                    grid:data.room.player1.grid,
+                    grid: data.room.player1.grid,
                 }
-                )
+            )
         });
         if (inLobby)
-            io.emit('newPlayer',{email:this.props.context.session.email});
+            await io.emit('joinLobby', {email: this.props.context.session.email});
+
         // Vérifie si tous les bateaux sont ajoutés;
         io.on('gameReady', (data) => {
             this.setState({
                 gameReady: data
             });
-            console.log('gameReady', data);
         });
-        io.on('leave',()=>this.setState({gameReady:false,gameStarted:false,message:'Connection perdue avec l\'invité'}));
+        io.on('leave', () => {
+            this.setState({gameReady: false, gameStarted: false, message: 'Connection perdue avec l\'invité'})
+        });
 
         // Opposant prêt
         io.on('opponentReady', (data) => {
@@ -64,7 +71,6 @@ class NewGame extends Component{
                 opponentReady: data
             });
         });
-
         io.on('receivedShot', (shotPosition) => {
             this.setState({
                 receivedShot: shotPosition
@@ -76,13 +82,20 @@ class NewGame extends Component{
                 myTurn: data.myTurn
             });
         });
+        io.on('shipDown', data => {
+            if (data) {
+                this.setState({shipDown: data})
+            }
+
+        });
 
         io.on('trackingGame', (data) => {
             if (data.hitPos) {
                 this.setState({
-                    hitPos: data.hitPos
+                    hitPos: data.hitPos,
+                    shipDown: data.shipDown
                 });
-            }else {
+            } else {
                 if (data.missedPos) {
                     this.setState({
                         missedPos: data.missedPos
@@ -91,17 +104,16 @@ class NewGame extends Component{
             }
 
         });
-
-        io.on('gameOver', (data) => {
+        io.on('gameOver', () => {
+            this.winner = this.state.hitPos.length >= 15;
             this.setState({
                 gameOver: true
             });
         });
+    };
 
-    }
     // Player make a shot
-
-    playerShoot =(shotPosition) =>{
+    playerShoot = (shotPosition) => {
         // Check if it is my turn or not
         if (this.state.myTurn) {
             // Check if this place is fired already
@@ -117,30 +129,29 @@ class NewGame extends Component{
                 // Notify server for the other player
 
                 io.emit('playerShoot', {shotPosition: shotPosition, roomId: this.state.roomId, myTurn: true});
-                console.log('shotPosition: ', shotPosition);
+
             }
-        } else {
-            //Materialize.toast('The other player\'s turn', 2000);
         }
     };
 
-    checkShotPosition =(allShotPosition, shotPosition) =>{
+    checkShotPosition = (allShotPosition, shotPosition) => {
         return _.find(this.state.allShotPosition, (pos) => {
             return pos.x === shotPosition.x && pos.y === shotPosition.y;
         });
     };
 
-
-    nouvellePartie=(event)=>{
+//h
+    nouvellePartie = (event) => {
         event.preventDefault();
-        io.disconnect();
-        io.connect();
-        io.emit('newPlayer',{email:this.props.context.session.email});
+        io.emit("leaveGame", {email: this.props.context.session.email});
+        io.emit("leaveLobby", {email: this.props.context.session.email});
+        io.emit('joinLobby', {email: this.props.context.session.email});
+        this.winner = false;
         this.setState({
             gameOver: false,
-            message:'Recherche de joueurs...',
+            message: 'Recherche de joueurs...',
             gameStarted: false,
-            inLobby:true,
+            inLobby: true,
             roomId: '',
             hitPos: [],
             allShotPosition: [],
@@ -149,10 +160,14 @@ class NewGame extends Component{
             gameReady: false
         });
     };
+
     render() {
+        if (!this.props.context.isLogged)
+            return <Redirect to={{pathname: '/login', state: {regSucc: false, logoutSucc: false}}}/>;
         const {
             message,
             inLobby,
+            shipDown,
             gameOver,
             gameStarted,
             gameReady,
@@ -165,67 +180,74 @@ class NewGame extends Component{
         } = this.state;
         const tableau = (
             (gameOver) ?
-                    <Modal show={gameOver}
-                           centered aria-labelledby="gameOver">
-                        <Modal.Header>
-                            <Modal.Title id="gameOver"
-                                         className={hitPos.length >= 15 ? ' mx-auto text-success' : 'mx-auto text-danger'}>
-                                {hitPos.length >= 15 ? 'Vous avez gagné' : 'Vous avez perdu'}
-                            </Modal.Title>
-                        </Modal.Header>
-                        <Modal.Footer>
-                            <button className={'btn btn-primary'} onClick={this.nouvellePartie}>Nouvelle partie</button>
-                            <button className={'btn btn-secondary'}
-                                    onClick={this.fermerGameOver}>Fermer
-                            </button>
-                        </Modal.Footer>
-                    </Modal>
-                    :
-                    <div>
+                <Modal show={gameOver}
+                       centered aria-labelledby="gameOver">
+                    <Modal.Header>
+                        <Modal.Title id="gameOver"
+                                     className={this.winner ? ' mx-auto text-success' : 'mx-auto text-danger'}>
+                            {this.winner ? 'Vous avez gagné' : 'Vous avez perdu'}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <button className={'btn btn-primary'} onClick={this.nouvellePartie}>Nouvelle partie</button>
+                        <button className={'btn btn-secondary'}
+                                onClick={this.fermerGameOver}>Fermer
+                        </button>
+                    </Modal.Footer>
+                </Modal>
+                :
+                <div>
 
-                        {(gameReady && opponentReady) ? <div><div className={'text-danger h2'}>Ennemie</div><Grid
-                            key={2}
-                            squarePx={this._size}
-                            playerShoot={this.playerShoot}
-                            hitPos={hitPos} missedPos={missedPos} ships={[]}/></div> :
-                            opponentReady ? <div className="h4 text-center alert alert-info">
+                    {(gameReady && opponentReady) ? <div>
+                            <div className={'text-danger h2'}>Ennemie</div>
+                            <Grid
+                                key={2}
+                                squarePx={this._size}
+                                playerShoot={this.playerShoot}
+                                hitPos={hitPos} missedPos={missedPos}
+                                shipDown={shipDown}
+                                ships={[]}/>
+                        </div> :
+                        opponentReady ? <div className="h4 text-center alert alert-info">
                             Votre adversaire est prêt
-                        </div>: gameReady?<div className="h4 text-center alert alert-secondary">
-                                Attente de l'adversaire
-                            </div>:<div className="h4 text-center alert alert-secondary">
-                                Placer vos bateaux
-                            </div>
-                        }
-                    </div>
+                        </div> : gameReady ? <div className="h4 text-center alert alert-secondary">
+                            Attente de l'adversaire
+                        </div> : <div className="h4 text-center alert alert-secondary">
+                            Placer vos bateaux
+                        </div>
+                    }
+                </div>
         );
-        const game=(
-        <div className="container">
-            <div className="row">
-                <div className="col-md-4 mx-auto">
-                    {gameReady && myTurn && opponentReady ? <div className="h4 alert alert-success">Votre tours</div> :
-                        gameReady && !myTurn && opponentReady && <div className="h4 alert alert-info">L'adversaire joue</div>}
+        const game = (
+            <div className="container">
+                <div className="row">
+                    <div className="col-md-4 mx-auto">
+                        {gameReady && myTurn && opponentReady ?
+                            <div className="h4 alert alert-success">Votre tours</div> :
+                            gameReady && !myTurn && opponentReady &&
+                            <div className="h4 alert alert-info">L'adversaire joue</div>}
+                    </div>
                 </div>
-            </div>
-            <div className="row">
-                <div className="col-sm-6">
-                    <div className={'text-info h2'}>Ma carte</div>
-                    <Board
-                        key={1}
-                        squarePx={this._size}
-                        gameReady={gameReady}
-                        roomId={roomId}
-                        disabled={gameReady}
-                        receivedShot={receivedShot}/>
-                </div>
+                <div className="row">
+                    <div className="col-md-6">
+                        <div className={'text-info h2'}>Ma carte</div>
+                        <Board
+                            key={1}
+                            squarePx={this._size}
+                            gameReady={gameReady}
+                            roomId={roomId}
+                            disabled={gameReady}
+                            receivedShot={receivedShot}/>
+                    </div>
 
-                <div className="col-sm-6">
-                    {tableau}
-                    {gameReady && opponentReady ?
-                        <h5>{'Détruisez les navires ennemies pour gagner '}</h5> : null}
+                    <div className="col-md-6">
+                        {tableau}
+                        {gameReady && opponentReady ?
+                            <h5>{'Détruisez les navires ennemies pour gagner '}</h5> : null}
+                    </div>
                 </div>
             </div>
-        </div>
-    );
+        );
         const lobby = (
             <div className="container">
                 <div className="row">
@@ -247,7 +269,7 @@ class NewGame extends Component{
                 </div>
             </div>
         );
-        return(
+        return (
             <Fragment>
                 <Prompt message={"Voulez-vous vraiment quiter?"}/>
                 <Fragment>
@@ -258,21 +280,34 @@ class NewGame extends Component{
         );
     }
 
-    cancelSearch =(event)=> {
+    cancelSearch = async (event) => {
         event.preventDefault();
-        io.disconnect();
-        this.setState({inLobby:false,message:''});
+        await io.emit("leaveLobby", {email: this.props.context.session.email});
+        this.setState({inLobby: false, message: ''});
     };
-    newSearch = (event)=> {
+    newSearch = (event) => {
         event.preventDefault();
-        io.disconnect();
-        io.connect();
-        io.emit('newPlayer',{email:this.props.context.session.email});
-        this.setState({inLobby:true,message:'Recherche de joueurs...'});
+        io.emit("leaveGame", {email: this.props.context.session.email});
+        io.emit("leaveLobby", {email: this.props.context.session.email});
+        io.emit('joinLobby', {email: this.props.context.session.email});
+        this.setState({
+            inLobby: true, message: 'Recherche de joueurs...',
+            gameReady: false,
+            roomId: '',
+            gameStarted: false,
+            opponentReady: false,
+            receivedShot: null,
+            myTurn: false,
+            allShotPosition: [],
+            hitPos: [],
+            missedPos: [],
+            gameOver: false
+        });
     };
-    fermerGameOver = (event)=>{
+    fermerGameOver = (event) => {
         event.preventDefault();
         this.props.history.push("/");
     }
 }
+
 export default withRouter(withSessionContext(NewGame));

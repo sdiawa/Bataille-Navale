@@ -1,93 +1,177 @@
 const Player = require("./Player");
-const {getUserByEmail} = require("../db/Config");
-const {initGrid} = require('./Grids');
+const {Bd} = require("../db/Config");
+
+//liste des joueurs en ligne
 let Players = [];
+//List des jeux en cours
 let Games = [];
+//salle d'attente Lobby
 let waitingRoom = [];
-let getWaiting = () =>waitingRoom;
-//créer et Ajouter joueur à la salle d'attente
-const addPlayer = async (id,email) =>{
-    let user = await getUserByEmail(email);
+
+/**
+ * @desc Créer et Ajouter joueur à la salle d'attente
+ * @param id
+ * @param email
+ * @return {Promise<boolean|*>}
+ */
+const addPlayer = async (id, email) => {
+    let user = await Bd.getUserByEmail(email);
     if (!user)
         return false;
-   let player =  new Player(id,user);
-   if (Players.some(value=> value.userid === player.userid)){
-       return Players.find(value => value.userid === player.userid)}
-   if (joinWaitingRoom(player)){
-      if (!Players.includes(player))
-          Players.push(player);
-      return true;
-   }
-   return false;
-
+    let player = new Player(id, user);
+    if (Players.some(value => value.userid === player.userid))
+        return Players.find(value => value.userid === player.userid);
+    Players.push(player);
+    return true;
 };
-const updateGameGrids = (roomId,grid,isPlayer1)=>{
-    let updatedGame = Games.find(value =>  value.id === roomId);
-    let idx = Games.findIndex(value =>  value.id === roomId);
-    if (updatedGame && idx){
-        (isPlayer1)?updatedGame.player1.grid = grid:updatedGame.player2.grid=grid;
-        Games[idx]= updatedGame;
-        return true
+
+/**
+ *
+ * @desc Mettre à jours la grille d'un joueur
+ * @param roomId
+ * @param grid
+ * @param isPlayer1
+ * @return {boolean}
+ */
+const updateGameGrids = (roomId, grid, isPlayer1) => {
+    let updatedGame = Games.find(value => value.id === roomId);
+    let idx = Games.findIndex(value => value.id === roomId);
+    if (updatedGame && idx !== undefined) {
+        (isPlayer1) ? updatedGame.player1.grid = grid : updatedGame.player2.grid = grid;
+        updatePlayer(updatedGame.player1);
+        updatePlayer(updatedGame.player2);
+        Games[idx] = updatedGame;
+        return true;
     }
     return false;
 };
-//rétirer joueur à la salle d'attente
-const removePlayer = async (player,socket) =>{
-    if (inWaitingRoom(player))
-        clearWaitingRoom(player);
-    let game = Games.find(value=>value.player1===player || value.player2===player);
-    if (game){
-        await socket.broadcast.to(game.id).emit('leave');
-        Games = Games.filter(value=>value.player1!==player || value.player2!==player);
+
+/**
+ *
+ * @desc Mettre à jours les joueurs Gagnant Perdant
+ * @param winnerId
+ * @param loserId
+ * @return {Promise<boolean>}
+ */
+const playersWinLose = async (winnerId, loserId) => {
+    let winner = await Bd.getUserById(winnerId);
+    let loser = await Bd.getUserById(loserId);
+    if (winner && loser) {
+        winner.win += 1;
+        loser.lose += 1;
+        await winner.save();
+        await loser.save();
+        Players = Players.map(value => {
+            if (value.userid === winner.id)
+                value.win = winner.win;
+            if (value.userid === loser.id)
+                value.lose = loser.lose;
+            return value
+        });
+        return true;
     }
-    if (Players.includes(player))
-        Players = Players.filter(value => value.id !== player.id);
+    return false;
 };
-//vérifie si un joueur est dans la salle d'attente
+
+/**
+ * @desc Rétirer un joueur d'un jeu
+ * @param player
+ * @param socket
+ * @return {boolean}
+ */
+const removePlayerFromGame = (player, socket) => {
+    let game = Games.find(value => value.player1 === player || value.player2 === player);
+    if (game) {
+        if (socket !== undefined) {
+            socket.broadcast.to(game.id).emit('leave');
+        }
+        Games = Games.filter(value => value.player1 !== player || value.player2 !== player);
+        return true;
+    }
+    return false;
+};
+
+/**
+ * @desc Rétirer joueur partout  le mettre hors-ligne ou mettre à jours la socket
+ * @param player
+ * @param socket
+ */
+const removePlayer = (player, socket) => {
+    if (Players.includes(player)) {
+        if (socket !== undefined) {
+            Players[Players.findIndex(value => value === player)].id = socket.id;
+        } else {
+            Players = Players.filter(value => value.id !== player.id);
+        }
+    }
+};
+
+/**
+ * @desc Vérifie si un joueur est dans la salle d'attente
+ * @param player
+ * @return {boolean}
+ */
 const inWaitingRoom = (player) => {
     return waitingRoom.includes(player)
 };
 
-//créer une session de jeu entre 2 joueurs de la salle d'attente
-const newGame =  (sockets)=>{
-    let player1,player2,winner;
+/**
+ * @desc créer une session de jeu entre 2 joueurs de la salle d'attente
+ * @param sockets
+ * @return {boolean}
+ */
+const newGame = (sockets) => {
+    let player1, player2;
     let status = "STARTED";
     waitingRoom = waitingRoom.filter(async value => await sockets[value.id] !== undefined);
-    if (waitingRoom.length >= 2){
+    if (waitingRoom.length >= 2) {
         player1 = waitingRoom[0];
         player2 = waitingRoom[1];
-        player1.grid = initGrid();
-        player2.grid = initGrid();
+        player1.grid = [];
+        player2.grid = [];
         clearWaitingRoom(player1);
         clearWaitingRoom(player2);
         let id = player1.id;
-        Games.push({id,status,player1,player2,winner});
+        Games.push({id, status, player1, player2});
         return true;
-    }else {
+    } else {
         return false;
     }
 };
-// retourne un joueur
-const getPlayer = (id)=>{
+/**
+ *
+ * @desc retourne un joueur
+ * @param id
+ * @return {*}
+ */
+const getPlayer = (id) => {
     return Players.find(value => value.id === id)
 };
-// retourne un jeu en cours
-const getMyGame = (id)=>{
+
+/**
+ *
+ * @desc retourne un jeu en cours en fonction de l'id du joueur
+ * @param id
+ * @return {*}
+ */
+const getMyGame = (id) => {
     return Games.find(value => (value.player1.id === id || value.player2.id === id))
 };
-// retourne un jeu en cours
-const getLastGame = ()=>{
-    if (Games.length > 0)
-        return Games[Games.length - 1];
-    return false;
-};
 
-// retourne tous les joueurs
-const getPlayers = ()=>Players;
+/**
+ * @desc retourne tous les joueurs
+ * @return {[]}
+ */
+const getPlayers = () => Players;
 
-//Ajout d'un joueur à la salle d'attente
+/**
+ *
+ * @desc Ajout d'un joueur à la salle d'attente
+ * @param player
+ * @return {boolean}
+ */
 const joinWaitingRoom = (player) => {
-    if (player && player.id !== undefined){
+    if (player && player.id !== undefined) {
         if (inWaitingRoom(player))
             return false;
         waitingRoom.push(player);
@@ -95,8 +179,40 @@ const joinWaitingRoom = (player) => {
     }
     return false;
 };
-//retirer un joueur de la salle d'attente
-const clearWaitingRoom = (player)=> {
-    waitingRoom = waitingRoom.filter(value => value.id !== player.id)
+
+/**
+ *
+ * @desc retirer un joueur de la salle d'attente
+ * @param player
+ */
+const clearWaitingRoom = (player) => {
+    waitingRoom = waitingRoom.filter(value => value.userid !== player.userid)
 };
-module.exports = {getPlayers,getMyGame,addPlayer,joinWaitingRoom,removePlayer,newGame,getWaiting,getPlayer,getLastGame,updateGameGrids};
+
+/**
+ *
+ * @desc mettre à jours un joueur
+ * @param player
+ * @return {boolean}
+ */
+const updatePlayer = (player) => {
+    if (Players.some(value => value.email === player.email)) {
+        Players[Players.findIndex(value => value.email === player.email)] = player;
+        return true;
+    }
+    return false;
+};
+module.exports = {
+    playersWinLose,
+    clearWaitingRoom,
+    removePlayerFromGame,
+    updatePlayer,
+    joinWaitingRoom,
+    addPlayer,
+    newGame,
+    removePlayer,
+    getPlayer,
+    getPlayers,
+    getMyGame,
+    updateGameGrids
+};

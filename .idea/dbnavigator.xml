@@ -32,6 +32,9 @@
     <connection id="0d3d3967-3637-4f9d-967f-5751bfb1dc4c">
       <console name="Connection" type="STANDARD" schema="information_schema" session="Main" />
     </connection>
+    <connection id="ecb23035-4430-421a-803a-088f17c09976">
+      <console name="POSTGRE" type="STANDARD" schema="" session="Main" />
+    </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files />
@@ -39,8 +42,10 @@
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="7b2dd060-5e05-4445-87e0-e90419199dd9" />
     <connection id="0d3d3967-3637-4f9d-967f-5751bfb1dc4c" />
+    <connection id="ecb23035-4430-421a-803a-088f17c09976" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="ecb23035-4430-421a-803a-088f17c09976" dataset="public.joueurs" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="7b2dd060-5e05-4445-87e0-e90419199dd9" dataset="db_bn.joueurs" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="0d3d3967-3637-4f9d-967f-5751bfb1dc4c" dataset="public.joueurs" active-filter-id="EMPTY_FILTER" />
   </component>
@@ -153,6 +158,89 @@
       <connection id="0d3d3967-3637-4f9d-967f-5751bfb1dc4c" active="false">
         <database>
           <name value="Postgre" />
+          <description value="" />
+          <database-type value="POSTGRES" />
+          <config-type value="BASIC" />
+          <database-version value="12.2" />
+          <driver-source value="BUILTIN" />
+          <driver-library value="" />
+          <driver value="" />
+          <url-type value="DATABASE" />
+          <host value="ec2-46-137-84-173.eu-west-1.compute.amazonaws.com" />
+          <port value="5432" />
+          <database value="dcpnigpjs7hlgm" />
+          <type value="USER_PASSWORD" />
+          <user value="kqmtyheeieimld" />
+          <deprecated-pwd value="ZTMyNTIzZjdkMzQyZjEyMzllNzAxYTAzOTY5NjE5NWZiYWFhNjI3ODZhNDdiNTM5MjdkYzFmMjcyY2QwYTgwZg==" />
+        </database>
+        <properties>
+          <auto-commit value="false" />
+        </properties>
+        <ssh-settings>
+          <active value="false" />
+          <proxy-host value="" />
+          <proxy-port value="22" />
+          <proxy-user value="" />
+          <deprecated-proxy-pwd value="" />
+          <auth-type value="PASSWORD" />
+          <key-file value="" />
+          <key-passphrase value="" />
+        </ssh-settings>
+        <ssl-settings>
+          <active value="false" />
+          <certificate-authority-file value="" />
+          <client-certificate-file value="" />
+          <client-key-file value="" />
+        </ssl-settings>
+        <details>
+          <charset value="UTF-8" />
+          <session-management value="true" />
+          <ddl-file-binding value="true" />
+          <database-logging value="false" />
+          <connect-automatically value="true" />
+          <restore-workspace value="true" />
+          <restore-workspace-deep value="true" />
+          <environment-type value="default" />
+          <idle-time-to-disconnect value="30" />
+          <idle-time-to-disconnect-pool value="5" />
+          <credential-expiry-time value="10" />
+          <max-connection-pool-size value="7" />
+          <alternative-statement-delimiter value="" />
+        </details>
+        <object-filters hide-empty-schemas="false" hide-pseudo-columns="false">
+          <object-type-filter use-master-settings="true">
+            <object-type name="SCHEMA" enabled="true" />
+            <object-type name="USER" enabled="true" />
+            <object-type name="ROLE" enabled="true" />
+            <object-type name="PRIVILEGE" enabled="true" />
+            <object-type name="CHARSET" enabled="true" />
+            <object-type name="TABLE" enabled="true" />
+            <object-type name="VIEW" enabled="true" />
+            <object-type name="MATERIALIZED_VIEW" enabled="true" />
+            <object-type name="NESTED_TABLE" enabled="true" />
+            <object-type name="COLUMN" enabled="true" />
+            <object-type name="INDEX" enabled="true" />
+            <object-type name="CONSTRAINT" enabled="true" />
+            <object-type name="DATASET_TRIGGER" enabled="true" />
+            <object-type name="DATABASE_TRIGGER" enabled="true" />
+            <object-type name="SYNONYM" enabled="true" />
+            <object-type name="SEQUENCE" enabled="true" />
+            <object-type name="PROCEDURE" enabled="true" />
+            <object-type name="FUNCTION" enabled="true" />
+            <object-type name="PACKAGE" enabled="true" />
+            <object-type name="TYPE" enabled="true" />
+            <object-type name="TYPE_ATTRIBUTE" enabled="true" />
+            <object-type name="ARGUMENT" enabled="true" />
+            <object-type name="DIMENSION" enabled="true" />
+            <object-type name="CLUSTER" enabled="true" />
+            <object-type name="DBLINK" enabled="true" />
+          </object-type-filter>
+          <object-name-filters />
+        </object-filters>
+      </connection>
+      <connection id="ecb23035-4430-421a-803a-088f17c09976" active="false">
+        <database>
+          <name value="POSTGRE" />
           <description value="" />
           <database-type value="POSTGRES" />
           <config-type value="BASIC" />
