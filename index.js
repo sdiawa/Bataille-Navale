@@ -130,23 +130,11 @@ io.on("connection", socket => {
                     game.status = "ENDED"
                 }
                 io.to(data.roomId).emit('gameOver', data);
-                socket.leave(data.roomId);
             }
         }
     });
-
-    //Déconnection d'un joueur
-    socket.on("disconnect", () => {
-        //console.log("Client disconnected");
-        const player = getPlayer(socket.id);
-        if (player) {
-            removePlayerFromGame(player, socket);
-            clearWaitingRoom(player);
-            removePlayer(player);
-            socket.emit('onlineUsers', getPlayers());
-        }
-    });
-
+    //quitter la room
+    socket.on('leave',(data)=>socket.leave(data.roomId));
     //Quitter une partie
     socket.on('leaveGame', async (data) => {
         let player = getPlayers().find(value => value.email === data.email);
@@ -159,7 +147,18 @@ io.on("connection", socket => {
         let player = getPlayers().find(value => value.email === data.email);
         if (player)
             clearWaitingRoom(player);
+    });
 
+    //Déconnection d'un joueur
+    socket.on("disconnect", () => {
+        //console.log("Client disconnected");
+        const player = getPlayer(socket.id);
+        if (player) {
+            removePlayerFromGame(player, socket);
+            clearWaitingRoom(player);
+            removePlayer(player);
+            socket.emit('onlineUsers', getPlayers());
+        }
     });
 });
 
