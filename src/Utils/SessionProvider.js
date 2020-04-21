@@ -69,7 +69,7 @@ class SessionProvider extends Component {
      */
     updateSession = async (session) => {
         Cookies.remove("bn-access_token");
-        Cookies.set("bn-access_token", {token: session.token}, {expires: 1, secure: true});
+        Cookies.set("bn-access_token", {token: session.token}, {expires: 1 /*,httpOnly: true, secure: true*/});
         await this.setState(prevState => {
             return {
                 isLogged: true,

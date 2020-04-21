@@ -11,12 +11,8 @@
   <component name="ChangeListManager">
     <list default="true" id="19e44116-c9f1-4016-84fe-a1678ed930da" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Api/core/Game.js" beforeDir="false" afterPath="$PROJECT_DIR$/Api/core/Game.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Api/db/Config.js" beforeDir="false" afterPath="$PROJECT_DIR$/Api/db/Config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Api/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/NewGame.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/NewGame.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/interface/Board.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/interface/Board.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Utils/Sockets.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utils/Sockets.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Utils/SessionProvider.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utils/SessionProvider.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,18 +73,18 @@
       <recent name="https://github.com/senhaji93/test.git" />
       <recent name="https://git.heroku.com/uvsq-bataille-navale-back.git" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/Components/interface/bateaux" />
-      <recent name="$PROJECT_DIR$/Api" />
-      <recent name="$PROJECT_DIR$/src" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/src/Components/interface/bateaux/3" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/Components/interface/bateaux" />
       <recent name="$PROJECT_DIR$/src/Components/interface/bateaux/4" />
       <recent name="$PROJECT_DIR$" />
       <recent name="C:\Users\sekou\WebstormProjects\bn-front\src\Components" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src/Components/interface/bateaux" />
+      <recent name="$PROJECT_DIR$/Api" />
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/src/Components/interface/bateaux/3" />
     </key>
   </component>
   <component name="RunManager" selected="npm.npm start">
@@ -285,6 +281,14 @@
       <screen x="0" y="28" width="1366" height="706" />
     </state>
     <state width="1318" height="174" key="GridCell.Tab.3.right/0.28.1366.706@0.28.1366.706" timestamp="1584694163920" />
+    <state x="127" y="87" width="1092" height="601" key="MergeDialog" timestamp="1587436423733">
+      <screen x="0" y="28" width="1366" height="706" />
+    </state>
+    <state x="127" y="87" width="1092" height="601" key="MergeDialog/0.28.1366.706@0.28.1366.706" timestamp="1587436423733" />
+    <state x="390" y="87" width="575" height="595" key="MultipleFileMergeDialog" timestamp="1587436423739">
+      <screen x="0" y="28" width="1366" height="706" />
+    </state>
+    <state x="390" y="87" width="575" height="595" key="MultipleFileMergeDialog/0.28.1366.706@0.28.1366.706" timestamp="1587436423739" />
     <state x="450" y="28" width="455" height="706" key="RollbackChangesDialog" timestamp="1585894880995">
       <screen x="0" y="28" width="1366" height="706" />
     </state>
@@ -301,6 +305,10 @@
       <screen x="0" y="28" width="1366" height="706" />
     </state>
     <state x="459" y="81" width="494" height="622" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.28.1366.706@0.28.1366.706" timestamp="1587269124780" />
+    <state x="420" y="28" width="516" height="706" key="git4idea.branch.GitSmartOperationDialog" timestamp="1587436403644">
+      <screen x="0" y="28" width="1366" height="706" />
+    </state>
+    <state x="420" y="28" width="516" height="706" key="git4idea.branch.GitSmartOperationDialog/0.28.1366.706@0.28.1366.706" timestamp="1587436403644" />
     <state x="339" y="185" key="run.anything.popup" timestamp="1587265467436">
       <screen x="0" y="28" width="1366" height="706" />
     </state>

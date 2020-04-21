@@ -39,8 +39,8 @@ class NewGame extends Component {
         io.connect();
         const {inLobby} = this.state;
         // joueur trouvé
-        io.on('newGame', async data => {
-            await this.setState(
+        io.on('newGame',  data => {
+            this.setState(
                 {
                     inLobby: false,
                     gameStarted: true,
@@ -48,7 +48,7 @@ class NewGame extends Component {
                     myTurn: io.id === data.room.id,
                     receivedShot: null,
                     message: data.message,
-                    opponentName:io.id === data.room.id ? data.room.player1.username:data.room.player2.username,
+                    opponentName:io.id !== data.room.id ? data.room.player1.username:data.room.player2.username,
                 }
             )
         });
