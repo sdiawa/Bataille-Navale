@@ -41,6 +41,7 @@ class Config {
                 console.error("Impossible de trouver une BD Postgres dans l'env DATABASE_URL.");
             else
                 console.error("Impossible de trouver la clé privée du token dans l'env TOKEN_KEY.");
+
         }
     }
 

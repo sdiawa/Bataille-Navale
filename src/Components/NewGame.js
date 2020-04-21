@@ -2,7 +2,6 @@ import React, {Component, Fragment} from "react";
 import {withSessionContext} from "../Utils/SessionProvider";
 import {Prompt, Redirect, withRouter} from "react-router-dom";
 import io from '../Utils/Sockets';
-import _ from "lodash";
 import Grid from "./interface/Grid";
 import Board from "./interface/Board";
 import {Modal} from "react-bootstrap";
@@ -15,12 +14,12 @@ class NewGame extends Component {
         this.state = {
             inLobby: true,
             message: 'Recherche de joueurs...',
-            grid: [],
             gameReady: false,
             roomId: '',
             gameStarted: false,
             shipDown: [],
             opponentReady: false,
+            opponentName:'',
             receivedShot: null,
             myTurn: false,
             allShotPosition: [],
@@ -47,8 +46,9 @@ class NewGame extends Component {
                     gameStarted: true,
                     roomId: data.room.id,
                     myTurn: io.id === data.room.id,
+                    receivedShot: null,
                     message: data.message,
-                    grid: data.room.player1.grid,
+                    opponentName:io.id === data.room.id ? data.room.player1.username:data.room.player2.username,
                 }
             )
         });
@@ -61,8 +61,26 @@ class NewGame extends Component {
                 gameReady: data
             });
         });
-        io.on('leave', () => {
-            this.setState({gameReady: false, gameStarted: false, message: 'Connection perdue avec l\'invité'})
+
+        io.on('leave', async (data) => {
+            await io.emit("leave",{roomId:data.roomId});
+            this.setState(
+                {
+                    gameReady: false,
+                    gameStarted: false,
+                    message: 'Connection perdue avec l\'invité',
+                    roomId: '',
+                    shipDown: [],
+                    opponentReady: false,
+                    opponentName:'',
+                    receivedShot: null,
+                    myTurn: false,
+                    allShotPosition: [],
+                    hitPos: [],
+                    missedPos: [],
+                    gameOver: false
+                }
+                    )
         });
 
         // Opposant prêt
@@ -71,6 +89,7 @@ class NewGame extends Component {
                 opponentReady: data
             });
         });
+
         io.on('receivedShot', (shotPosition) => {
             this.setState({
                 receivedShot: shotPosition
@@ -89,6 +108,7 @@ class NewGame extends Component {
 
         });
 
+        //Traquer l'état du jeu
         io.on('trackingGame', (data) => {
             if (data.hitPos) {
                 this.setState({
@@ -104,60 +124,69 @@ class NewGame extends Component {
             }
 
         });
-        io.on('gameOver', () => {
+
+        // match terminer
+        io.on('gameOver', async (data) => {
             this.winner = this.state.hitPos.length >= 15;
+            await io.emit("leave",{roomId:data.roomId});
             this.setState({
-                gameOver: true
+                gameOver: true,
+                shipDown: [],
+                opponentName:'',
+                receivedShot: null,
+                myTurn: false,
+                allShotPosition: [],
+                hitPos: [],
+                missedPos: [],
             });
         });
     };
 
-    // Player make a shot
-    playerShoot = (shotPosition) => {
-        // Check if it is my turn or not
-        if (this.state.myTurn) {
-            // Check if this place is fired already
-            if (this.checkShotPosition(this.state.allShotPosition, shotPosition)) {
-                //Materialize.toast('You already shot this place', 2000);
-            } else {
+    // Tirer sur l'adversaire
+    playerShoot = async (shotPosition) => {
+        const {myTurn,allShotPosition,roomId} = this.state;
+        // Vérifier si c'est mon tours
+        if (myTurn) {
+            if (!this.checkShotPosition(allShotPosition, shotPosition)) {
                 this.setState({
-                    // allShotPosition: position that were fired
-                    allShotPosition: [...this.state.allShotPosition, shotPosition],
+                    allShotPosition: [...allShotPosition, shotPosition],
                     myTurn: false
                 });
-
-                // Notify server for the other player
-
-                io.emit('playerShoot', {shotPosition: shotPosition, roomId: this.state.roomId, myTurn: true});
-
+                // informe l'adversaire
+                await io.emit('playerShoot', {shotPosition: shotPosition, roomId: roomId, myTurn: true});
             }
         }
     };
 
+    //Vérifie la position d'un tire
     checkShotPosition = (allShotPosition, shotPosition) => {
-        return _.find(this.state.allShotPosition, (pos) => {
+        return this.state.allShotPosition.find( (pos) => {
             return pos.x === shotPosition.x && pos.y === shotPosition.y;
         });
     };
 
-//h
-    nouvellePartie = (event) => {
+    //relancer une partie
+    nouvellePartie = async (event) => {
         event.preventDefault();
-        io.emit("leaveGame", {email: this.props.context.session.email});
-        io.emit("leaveLobby", {email: this.props.context.session.email});
-        io.emit('joinLobby', {email: this.props.context.session.email});
+        await io.emit("leaveGame", {email: this.props.context.session.email});
+        await io.emit("leaveLobby", {email: this.props.context.session.email});
+        await io.emit('joinLobby', {email: this.props.context.session.email});
         this.winner = false;
         this.setState({
-            gameOver: false,
-            message: 'Recherche de joueurs...',
-            gameStarted: false,
             inLobby: true,
+            message: 'Recherche de joueurs...',
+            gameReady: false,
             roomId: '',
-            hitPos: [],
-            allShotPosition: [],
-            myTurn: false,
+            gameStarted: false,
+            shipDown: [],
             opponentReady: false,
-            gameReady: false
+            opponentName:'',
+            receivedShot: null,
+            myTurn: false,
+            allShotPosition: [],
+            hitPos: [],
+            missedPos: [],
+            gameOver: false
         });
     };
 
@@ -172,6 +201,7 @@ class NewGame extends Component {
             gameStarted,
             gameReady,
             opponentReady,
+            opponentName,
             hitPos,
             missedPos,
             roomId,
@@ -196,10 +226,10 @@ class NewGame extends Component {
                     </Modal.Footer>
                 </Modal>
                 :
-                <div>
+                <Fragment>
 
                     {(gameReady && opponentReady) ? <div>
-                            <div className={'text-danger h2'}>Ennemie</div>
+                            <div className={'text-danger h3'}>{opponentName}</div>
                             <Grid
                                 key={2}
                                 squarePx={this._size}
@@ -216,7 +246,7 @@ class NewGame extends Component {
                             Placer vos bateaux
                         </div>
                     }
-                </div>
+                </Fragment>
         );
         const game = (
             <div className="container">
@@ -230,7 +260,7 @@ class NewGame extends Component {
                 </div>
                 <div className="row">
                     <div className="col-md-6">
-                        <div className={'text-info h2'}>Ma carte</div>
+                        <div className={'text-info h3'}>Ma carte</div>
                         <Board
                             key={1}
                             squarePx={this._size}
@@ -285,17 +315,19 @@ class NewGame extends Component {
         await io.emit("leaveLobby", {email: this.props.context.session.email});
         this.setState({inLobby: false, message: ''});
     };
-    newSearch = (event) => {
+    newSearch = async (event) => {
         event.preventDefault();
-        io.emit("leaveGame", {email: this.props.context.session.email});
-        io.emit("leaveLobby", {email: this.props.context.session.email});
-        io.emit('joinLobby', {email: this.props.context.session.email});
+        await io.emit("leaveGame", {email: this.props.context.session.email});
+        await io.emit("leaveLobby", {email: this.props.context.session.email});
+        await io.emit('joinLobby', {email: this.props.context.session.email});
         this.setState({
-            inLobby: true, message: 'Recherche de joueurs...',
+            inLobby: true,
+            message: 'Recherche de joueurs...',
             gameReady: false,
             roomId: '',
             gameStarted: false,
             opponentReady: false,
+            opponentName:'',
             receivedShot: null,
             myTurn: false,
             allShotPosition: [],

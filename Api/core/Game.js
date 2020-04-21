@@ -80,12 +80,13 @@ const playersWinLose = async (winnerId, loserId) => {
  * @return {boolean}
  */
 const removePlayerFromGame = (player, socket) => {
-    let game = Games.find(value => value.player1 === player || value.player2 === player);
+    let game = getMyGame(player.id);
     if (game) {
         if (socket !== undefined) {
-            socket.broadcast.to(game.id).emit('leave');
+            socket.broadcast.to(game.id).emit('leave',{roomId:game.id});
+            socket.leave(game.id);
         }
-        Games = Games.filter(value => value.player1 !== player || value.player2 !== player);
+        Games = Games.filter(value => value.id !== game.id);
         return true;
     }
     return false;
@@ -123,7 +124,7 @@ const inWaitingRoom = (player) => {
 const newGame = (sockets) => {
     let player1, player2;
     let status = "STARTED";
-    waitingRoom = waitingRoom.filter(async value => await sockets[value.id] !== undefined);
+    //waitingRoom = waitingRoom.filter(async value => await sockets[value.id] !== undefined);
     if (waitingRoom.length >= 2) {
         player1 = waitingRoom[0];
         player2 = waitingRoom[1];

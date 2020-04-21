@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import _ from 'lodash';
 import io from '../../Utils/Sockets';
 import hitImg from './bateaux/hit.png';
@@ -92,6 +92,7 @@ export default class Board extends Component {
                 x: nextProps.receivedShot.x,
                 y: nextProps.receivedShot.y
             };
+            if (nextProps.gameReady)
             this.shipSinked(null, shotPos);
         }
     }
@@ -310,10 +311,10 @@ export default class Board extends Component {
     shipSinked = (e, shotPosition) => {
         let missedTime = 0;
         let trackShip;
-        _.find(this.bateaux, (ship) => {
+        this.bateaux.forEach( (ship) => {
             const allPos = this.positionsShip(ship);
             trackShip = ship;
-            _.find(allPos, (shipPos) => {
+            allPos.find((shipPos) => {
                 const isHit = shipPos.x === shotPosition.x && shipPos.y === shotPosition.y;
                 if (isHit) {
                     if (!this.checkIfHit(this.state.hitPos, shotPosition)) {
@@ -336,9 +337,9 @@ export default class Board extends Component {
                         };
                         io.emit('trackingGame', data);
                     }
-                } else {
+                }
+                else {
                     missedTime++;
-
                     if (missedTime === 15) {
                         const missedPos = _.uniq([...this.state.missedPos, Object.assign({}, trackShip, shotPosition)]);
                         this.setState({
@@ -347,7 +348,6 @@ export default class Board extends Component {
                         io.emit('trackingGame', {roomId: this.props.roomId, missedPos: shotPosition});
                     }
                 }
-
                 return isHit;
             });
         });
@@ -360,7 +360,7 @@ export default class Board extends Component {
     render() {
         const affichageBateaux = [];
         const {listChoixBateaux, currentShip, bateaux, isVertical, shipAdded} = this.state;
-        // Build the ship image
+        // generer l'image des bateaux
         const choixBateaux = listChoixBateaux.map((value, key) => {
             return (
 
@@ -376,56 +376,58 @@ export default class Board extends Component {
         });
         bateaux.forEach((item, index) => affichageBateaux.push(this.genererBateau(item, index)));
         return (
-            <div style={{
-                position: 'relative',
-                'width': `${this.props.squarePx * this.props.size}px`,
-                'height': `${this.props.squarePx * this.props.size}px`,
-                'marginBottom': '60px'
-            }}>
+            <Fragment>
+                <div style={{
+                    position: 'relative',
+                    'width': `${this.props.squarePx * this.props.size}px`,
+                    'height': `${this.props.squarePx * this.props.size}px`,
+                    'marginBottom': '60px'
+                }}>
 
-                {/* Render the target image if Good Shot in the other player's Board */}
+                    {/* Render the target image if Good Shot in the other player's Board */}
 
-                {this.state.hitPos.map((shinkPos, key) => {
-                    return (
-                        <img className="animated zoomIn" key={key} style={{
-                            width: `${this.props.squarePx}px`,
-                            height: `${this.props.squarePx}px`,
-                            position: 'absolute',
-                            left: `${this.props.squarePx * shinkPos.x}px`,
-                            top: `${this.props.squarePx * shinkPos.y}px`,
-                            zIndex: '2'
-                        }} src={hitImg}
-                             alt={''}/>
-                    );
-                })}
+                    {this.state.hitPos.map((shinkPos, key) => {
+                        return (
+                            <img className="animated zoomIn" key={key} style={{
+                                width: `${this.props.squarePx}px`,
+                                height: `${this.props.squarePx}px`,
+                                position: 'absolute',
+                                left: `${this.props.squarePx * shinkPos.x}px`,
+                                top: `${this.props.squarePx * shinkPos.y}px`,
+                                zIndex: '2'
+                            }} src={hitImg}
+                                 alt={''}/>
+                        );
+                    })}
 
-                {this.state.missedPos.map((missed, key) => {
-                    return (
-                        <div className="animated zoomIn" key={key} style={{
-                            width: `${this.props.squarePx}px`,
-                            height: `${this.props.squarePx}px`,
-                            position: 'absolute',
-                            left: `${this.props.squarePx * missed.x}px`,
-                            top: `${this.props.squarePx * missed.y}px`,
-                            zIndex: '2',
-                            border: '1px solid #A9A9A9',
-                            borderRadius: '5%',
-                            backgroundColor: '#336699'
-                        }}
-                        />
-                    );
-                })}
+                    {this.state.missedPos.map((missed, key) => {
+                        return (
+                            <div className="animated zoomIn" key={key} style={{
+                                width: `${this.props.squarePx}px`,
+                                height: `${this.props.squarePx}px`,
+                                position: 'absolute',
+                                left: `${this.props.squarePx * missed.x}px`,
+                                top: `${this.props.squarePx * missed.y}px`,
+                                zIndex: '2',
+                                border: '1px solid #A9A9A9',
+                                borderRadius: '5%',
+                                backgroundColor: '#336699'
+                            }}
+                            />
+                        );
+                    })}
 
-                <Grid
-                    size={this.props.size}
-                    noMissed={true}
-                    squarePx={this.props.squarePx}
-                    ships={affichageBateaux}
-                    disabled={this.props.disabled}
-                    currentShip={currentShip}
-                    addShip={this.addShip}
-                    shipAdded={shipAdded}
-                />
+                    <Grid
+                        size={this.props.size}
+                        noMissed={true}
+                        squarePx={this.props.squarePx}
+                        ships={affichageBateaux}
+                        disabled={this.props.disabled}
+                        currentShip={currentShip}
+                        addShip={this.addShip}
+                        shipAdded={shipAdded}
+                    />
+                </div>
                 {!this.props.gameReady && <div className={'form-group'}>{choixBateaux}</div>}
                 {!this.props.gameReady && <div>
                     <button className={'btn btn-info'} style={{
@@ -433,8 +435,7 @@ export default class Board extends Component {
                     }}
                             onClick={this.changeOrientation}>{isVertical ? ORIENTATION_BATEAU.VERTICAL : ORIENTATION_BATEAU.HORIZONTAL}</button>
                 </div>}
-            </div>
-
+            </Fragment>
         );
     }
 
