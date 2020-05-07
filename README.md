@@ -5,7 +5,7 @@ Ce repo comprend la partie front et back du projet
 ## Installation En local (Dev)
 ### Requirement
 - node v > 10 (npm)
-- mysql
+- postgres
 - IDE Webstorm 
 
 ### Front (ReactJs)
